@@ -3,7 +3,7 @@ services:
   - type: web
     name: followthrough
     runtime: docker
-    plan: standard
+    plan: starter
     region: singapore
     healthCheckPath: /api/health
     envVars:

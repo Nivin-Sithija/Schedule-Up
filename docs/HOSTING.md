@@ -1,6 +1,6 @@
 # Render hosting preparation
 
-This is a single-instance pilot deployment. The app/embedded worker is Standard, with private Starter WAHA and Temporal services and one 1 GB disk for each private service. Existing Tiger storage is reused. Do not start a second API/worker against the same workspace during cutover.
+This is a single-instance pilot deployment. The app/embedded worker, private WAHA, and private Temporal services use Starter instances and one 1 GB disk for each private service. Existing Tiger storage is reused. Do not start a second API/worker against the same workspace during cutover.
 
 ## Before provisioning
 
@@ -27,7 +27,7 @@ After deploy: health endpoint 200; HTTPS login; database reads/writes; Telegram 
 
 ## Budget review before creating services
 
-Render currently lists Standard compute at $25/month and Starter at $7/month. Three selected instances total $39/month in compute, approximately $18 over 14 days if prorated. This excludes disk, build, bandwidth, workspace-plan fees and any upgrades. Check the actual Blueprint checkout against the remaining $50 credit and its expiry before starting it. Tiger uses its separate existing credits. Keep a reserve for memory upgrades rather than promising an unmeasured two-week total.
+Render currently lists Standard compute at $25/month and Starter at $7/month. The approved demo configuration uses three Starter instances: $21/month in compute plus $0.50/month for two 1 GB disks, approximately $10 over 14 days if prorated. The app has 512 MB RAM; no peak-load test was requested. This excludes disk, build, bandwidth, workspace-plan fees and any upgrades. Check the actual Blueprint checkout against the remaining $50 credit and its expiry before starting it. Tiger uses its separate existing credits. Keep a reserve for memory upgrades rather than promising an unmeasured two-week total.
 
 [Render compute comparison](https://render.com/articles/render-vs-railway) · [Blueprint reference](https://render.com/docs/blueprint-spec) · [Persistent disks](https://render.com/docs/disks)
 
@@ -37,4 +37,8 @@ OpenRouter's documented free-model limits are 50/day and 20/minute without the q
 
 ## Current preflight result
 
-Native AMD64 container verification passed in [GitHub Actions](https://github.com/Nivin-Sithija/followthrough/actions/runs/38674034084): image build, 80 tests, and offline embedding inference. WAHA's pinned image manifest supports Linux AMD64. Render API authentication succeeds, but `POST /blueprints/validate` currently returns `need_payment_info` for all three resources. Complete billing setup and verify the promotional credit in My Workspace before approving paid provisioning. No resources have been created. OpenRouter's two free Gemma endpoints currently reject inference with upstream shared-pool rate limits; a valid key and unused personal quota do not establish provider availability.
+Native AMD64 container verification passed in [GitHub Actions](https://github.com/Nivin-Sithija/followthrough/actions/runs/38674034084): image build, 80 tests, and offline embedding inference. WAHA's pinned image manifest supports Linux AMD64. Render API authentication succeeds and Blueprint validation now passes after billing setup. The owner approved the revised three-Starter demo plan plus two 1 GB disks on 15 October 2026. GitHub repository access was granted. Private WAHA and Temporal services have been created and resumed following the budget review; app provisioning and full hosted acceptance checks are pending.
+
+The selected custom domain is `scheduleup.tech`. Its authoritative nameservers are the `.tech domains` OrderBox nameservers; no apex IPv4 record was present at preflight. Obtain the actual target from Render after app creation before changing DNS. Domain HTTPS has not been verified.
+
+OpenRouter's free Gemma endpoint still returned HTTP 429 on the latest small inference check. A valid key and unused personal quota do not establish provider availability; hosted AI acceptance checks remain pending.
