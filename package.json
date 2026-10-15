@@ -1,5 +1,5 @@
 {
-  "name": "followthrough",
+  "name": "scheduleup",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,7 +9,7 @@
     "ui": "vite",
     "build": "vite build && tsc --noEmit",
     "start": "node --env-file-if-exists=.env --import tsx src/server.ts",
-    "test": "node --import tsx --test tests/*.test.ts",
+    "test": "node --import tsx --test tests/*.test.ts tests/*.test.mjs",
     "check": "tsc --noEmit",
     "eval:local": "node --env-file-if-exists=.env --import tsx scripts/evaluate.ts",
     "check:integrations": "node --env-file-if-exists=.env --import tsx scripts/check-integrations.ts",

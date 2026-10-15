@@ -22,9 +22,11 @@ import { workspaceSetupSchema, applyWorkspaceSetup, phoneSchema } from './worksp
 import { templateSchema } from './template-validation.js';
 import { deadlineSchema } from './domain.js';
 import { demoState } from './demo.js';
+import { installHttpSecurity, RequestLimitError } from './http-security.js';
 await initStore(); await initAuthStore(); await initRetrieval(); await initRuntime();await initTelegram();
-const app = Fastify({ logger: { redact: ['req.headers.cookie','req.headers.authorization','req.body'] }, bodyLimit: 65536 });
+const app = Fastify({ logger: { redact: ['req.headers.cookie','req.headers.authorization','req.body'] }, bodyLimit: 65536, trustProxy: config.hosted ? (_address,hop)=>hop===0 : false, requestTimeout:30000, connectionTimeout:30000 });
 await app.register(cookie);
+installHttpSecurity(app,config.hosted,(process.env.APP_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173,http://localhost:3001,http://127.0.0.1:3001').split(',').map(x=>x.trim()));
 const publicRoutes=new Set(['/api/health','/api/auth/register','/api/auth/login','/api/auth/me','/api/demo','/api/webhooks/waha']);
 app.addHook('onRequest',async(req,reply)=>{
   if(!req.url.startsWith('/api'))return;
@@ -39,15 +41,7 @@ app.addHook('onRoute',route=>{
 function setSession(reply:any,token:string){reply.setCookie('ft_session',token,{path:'/',httpOnly:true,sameSite:'strict',secure:config.hosted,maxAge:7*86400});}
 app.removeContentTypeParser('application/json');
 app.addContentTypeParser('application/json',{parseAs:'string'},(req,body,done)=>{ (req as any).rawBody=body; try { done(null,JSON.parse(body as string)); } catch { done(new Error('Invalid JSON')); } });
-app.addHook('preHandler',async(req,reply)=>{
-  if(['POST','PUT','PATCH','DELETE'].includes(req.method) && req.url.startsWith('/api') && req.url!=='/api/webhooks/waha') {
-    if(req.headers['x-followthrough']!=='dashboard') return reply.code(403).send({error:'Dashboard request header required'});
-    const origin = req.headers.origin;
-    const allowed = (process.env.APP_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173,http://localhost:3001,http://127.0.0.1:3001').split(',');
-    if(origin && !allowed.includes(origin)) return reply.code(403).send({error:'Untrusted origin'});
-  }
-});
-app.setErrorHandler((error:any,_req,reply)=> { if(error instanceof z.ZodError) return reply.code(400).send({error:'Invalid request',details:error.issues.map(x=>x.message)}); captureError(error); return reply.code(error.statusCode || 400).send({error:error.message || 'Request failed'}); });
+app.setErrorHandler((error:any,_req,reply)=> { if(error instanceof RequestLimitError)return reply.header('Retry-After',String(error.retryAfter)).code(429).send({error:error.message}); if(error.code && /^(?:[0-9A-Z]{5}$|ECONN|EHOST|ETIMEDOUT)/.test(error.code)){captureError(error);return reply.code(503).send({error:'Service temporarily unavailable. Please try again shortly.'});} if(error.statusCode===429)reply.header('Retry-After','900'); if(error instanceof z.ZodError) return reply.code(400).send({error:'Invalid request',details:error.issues.map(x=>x.message)}); captureError(error); return reply.code(error.statusCode || 400).send({error:error.message || 'Request failed'}); });
 app.get('/api/health',async()=>({ok:true}));
 app.post('/api/auth/register',async(req,reply)=>{
   await rateLimit(`register:${req.ip}`,5);

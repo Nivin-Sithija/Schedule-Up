@@ -25,9 +25,9 @@ export const changeSchema = z.object({
   status: z.enum(['review', 'open', 'waiting', 'completed', 'cancelled']),
   due: z.string().nullable(), evidence: z.array(z.string()).min(1).max(10),
   explicit: z.boolean(), reason: z.string().max(500),
-});
+}).strict();
 export type Change = z.infer<typeof changeSchema>;
-export const extractionSchema = z.object({ changes: z.array(changeSchema).max(12) });
+export const extractionSchema = z.object({ changes: z.array(changeSchema).max(12) }).strict();
 export function validateChanges(changes: Change[], messages: Message[], tasks: Task[], clientId: string): Change[] {
   const ids = new Set(messages.filter(m => m.clientId === clientId).map(m => m.id));
   for (const c of changes) {

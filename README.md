@@ -1,4 +1,4 @@
-# FollowThrough
+# ScheduleUp
 
 A WhatsApp and Telegram client workspace for commitments, dates, missing inputs and approved follow-ups. Both sides of the conversation inform the task tracker. AI proposes; deterministic application code validates and commits.
 
@@ -71,11 +71,11 @@ Set `STORE_DRIVER=postgres` and `TIGER_DATABASE_URL` to use Tiger for all applic
 
 `TIGER_CA_PATH` can point to a trusted certificate bundle. The application retains certificate and hostname verification; it does not disable TLS checks.
 
-`TIGER_DATABASE_URL` enables pgvector + PostgreSQL English full-text search fused by reciprocal rank. Use a database dedicated to FollowThrough development/pilot; do not point at an unrelated project's database. The embedding model downloads on first use, so prewarm/package it before hosting. Retrieval failure falls back to current conversation context; old search results are checked against authoritative workspace messages. Without Tiger, only the file-backed simulator is available.
+`TIGER_DATABASE_URL` enables pgvector + PostgreSQL English full-text search fused by reciprocal rank. Use a database dedicated to ScheduleUp development/pilot; do not point at an unrelated project's database. The embedding model downloads on first use, so prewarm/package it before hosting. Retrieval failure falls back to current conversation context; old search results are checked against authoritative workspace messages. Without Tiger, only the file-backed simulator is available.
 
 ## Hosting
 
-`render.yaml` is an unprovisioned scaffold for the API/worker, private WAHA and private Temporal. The API also serves the built frontend, reducing separate deployment setup. Configure your domain and set `APP_ORIGINS` to its exact HTTPS origin. Production startup requires Tiger PostgreSQL, Temporal and owner authentication.
+The pilot is hosted at **https://scheduleup.tech** on Render, with one API/worker service, private WAHA and private Temporal. `render.yaml` documents the service configuration. The API also serves the built frontend, reducing separate deployment setup. Configure your domain and set `APP_ORIGINS` to its exact HTTPS origin. Production startup requires Tiger PostgreSQL, Temporal and owner authentication.
 
 Hosted settings: `AI_PROVIDER=openrouter`; primary `google/gemma-4-26b-a4b-it:free`, fallback `google/gemma-4-31b-it:free`. Only free Gemma IDs are accepted. Shared quotas remain shared; API key rotation cannot increase them. Queue failed analysis and keep manual actions available.
 
@@ -114,7 +114,7 @@ The local ARM WAHA image can be configured through `WAHA_IMAGE`; the private tes
 
 ### VS Code Run and Debug
 
-Open this project folder in VS Code, select **FollowThrough: Start all services** in Run and Debug, then press **F5**. The pre-launch task starts Docker Desktop on macOS if necessary, starts/reuses the WAHA and Temporal Compose services, starts/reuses Ollama, and checks the configured model is installed. It then builds the dashboard and debugs `src/server.ts` using the project-local Node 22 runtime. The API serves the dashboard and starts its Temporal worker; the browser opens at http://localhost:3001 when the API is listening. Existing `.env` credentials and the hosted Tiger database are reused.
+Open this project folder in VS Code, select **ScheduleUp: Start all services** in Run and Debug, then press **F5**. The pre-launch task starts Docker Desktop on macOS if necessary, starts/reuses the WAHA and Temporal Compose services, starts/reuses Ollama, and checks the configured model is installed. It then builds the dashboard and debugs `src/server.ts` using the project-local Node 22 runtime. The API serves the dashboard and starts its Temporal worker; the browser opens at http://localhost:3001 when the API is listening. Existing `.env` credentials and the hosted Tiger database are reused.
 
 Install dependencies with `npm install` before the first run. Stop any app already listening on the configured API port before F5. Press **Shift+F5** to stop the API and its worker. Docker services and Ollama remain running to preserve the linked WhatsApp session and support quick restarts. Frontend changes require restarting this launch configuration to rebuild the dashboard; backend breakpoints work in the TypeScript source. No separate `npm run worker` or `npm run ui` is needed for this configuration.
 
@@ -129,7 +129,7 @@ API handlers, local batches, V2 Temporal workflows/activities and retrieval quer
 
 ## Telegram and the shared task timeline
 
-FollowThrough now supports personal Telegram accounts alongside WhatsApp. The Telegram adapter uses the open-source GramJS MTProto client, not the Bot API. Add application credentials from https://my.telegram.org/apps to `.env` as `TELEGRAM_API_ID` and `TELEGRAM_API_HASH`, then restart the app. F5 starts the adapter inside the API; no extra Telegram container is needed.
+ScheduleUp now supports personal Telegram accounts alongside WhatsApp. The Telegram adapter uses the open-source GramJS MTProto client, not the Bot API. Add application credentials from https://my.telegram.org/apps to `.env` as `TELEGRAM_API_ID` and `TELEGRAM_API_HASH`, then restart the app. F5 starts the adapter inside the API; no extra Telegram container is needed.
 
 1. Register/sign in. Save your owner number in Settings.
 2. In Settings → Telegram, save the Telegram account's international number (it may differ from WhatsApp), click Connect Telegram, then scan the QR in Telegram → Settings → Devices → Link Desktop Device. If Telegram requests two-step verification, enter its password in the dashboard; it is used in memory and not stored.

@@ -28,7 +28,7 @@
 
 <!-- Thanks for participating! -->
 <!-- Current project facts for the eventual submission (15 October 2026):
-FollowThrough is an account-based WhatsApp + personal Telegram commitment tracker.
+ScheduleUp is an account-based WhatsApp + personal Telegram commitment tracker.
 Both channels feed a shared deadline calendar, with channel badges, evidence links,
 owner-reviewed drafts/templates and approved follow-ups. Gemma runs through Ollama
 in development and Mastra orchestrates generation. Tiger stores account-scoped state

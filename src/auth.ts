@@ -1,6 +1,7 @@
 import { randomBytes, randomUUID, scrypt, timingSafeEqual, createHash } from 'node:crypto';
 import { z } from 'zod';
 import { readAuth, updateAuth, type User } from './auth-store.js';
+import { RequestLimitError } from './limits.js';
 export const emailSchema=z.string().trim().toLowerCase().email().max(254);
 const common=new Set(['passwordpassword','123456789012345','password123456789','qwertyuiopasdfgh','followthrough123']);
 export const passwordSchema=z.string().min(15,'Use at least 15 characters').max(128,'Use at most 128 characters').refine(p=>!common.has(p.toLowerCase()),'Choose a less common password');
@@ -8,8 +9,11 @@ export const registrationSchema=z.object({name:z.string().trim().min(1).max(100)
 const digest=(token:string)=>createHash('sha256').update(token).digest('hex');
 // Serialize memory-hard hashing to keep concurrent requests from exhausting the host.
 let hashing:Promise<unknown>=Promise.resolve();
+let pendingHashes=0;
 function derive(password:string,salt:string):Promise<Buffer>{
-  const work=hashing.then(()=>new Promise<Buffer>((resolve,reject)=>scrypt(password,salt,64,{N:131072,r:8,p:1,maxmem:192*1024*1024},(error,key)=>error?reject(error):resolve(key))));hashing=work.catch(()=>{});return work;
+  if(pendingHashes>=4)return Promise.reject(new RequestLimitError(5));
+  pendingHashes++;
+  const work=hashing.then(()=>new Promise<Buffer>((resolve,reject)=>scrypt(password,salt,64,{N:131072,r:8,p:1,maxmem:192*1024*1024},(error,key)=>error?reject(error):resolve(key))));hashing=work.catch(()=>{});return work.finally(()=>{pendingHashes--;});
 }
 export async function hashPassword(password:string){const salt=randomBytes(16).toString('hex');return `scrypt$131072$8$1$${salt}$${(await derive(password,salt)).toString('hex')}`;}
 export async function verifyPassword(password:string,stored:string){const parts=stored.split('$');if(parts.length!==6||parts.slice(0,4).join('$')!=='scrypt$131072$8$1')return false;const expected=Buffer.from(parts[5],'hex'),actual=await derive(password,parts[4]);return expected.length===actual.length&&timingSafeEqual(expected,actual);}

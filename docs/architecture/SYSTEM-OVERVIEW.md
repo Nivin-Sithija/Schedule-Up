@@ -1,12 +1,12 @@
-# FollowThrough system overview
+# ScheduleUp system overview
 
-![FollowThrough high-level architecture](followthrough-architecture.png)
+![ScheduleUp high-level architecture](scheduleup-architecture.png)
 
-[Editable SVG](followthrough-architecture.svg)
+[Editable SVG](scheduleup-architecture.svg)
 
 ## What each component contributes
 
-| Component | Its job in FollowThrough |
+| Component | Its job in ScheduleUp |
 |---|---|
 | React | The owner's inbox, task calendar, templates, scheduled follow-ups, client management and connection setup. |
 | Fastify + TypeScript | Authenticates account sessions, isolates workspaces, validates incoming events and serves the dashboard API. It handles owner-approved send requests and protects account credentials. |

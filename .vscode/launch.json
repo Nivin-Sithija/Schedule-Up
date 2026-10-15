@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "FollowThrough: Start all services",
+      "name": "ScheduleUp: Start all services",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
@@ -13,7 +13,7 @@
         "tsx"
       ],
       "program": "${workspaceFolder}/src/server.ts",
-      "preLaunchTask": "FollowThrough: prepare workspace",
+      "preLaunchTask": "ScheduleUp: prepare workspace",
       "console": "integratedTerminal",
       "skipFiles": [
         "<node_internals>/**",

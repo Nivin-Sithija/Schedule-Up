@@ -1,4 +1,4 @@
-# FollowThrough active target tracks — 15 October 2026
+# ScheduleUp active target tracks — 15 October 2026
 
 The active targets are Gemma, Mastra, Tiger Data, Temporal and Render. Sentry was removed from the plan at the owner's request. A dependency or demonstration fixture alone is not evidence of a completed integration.
 

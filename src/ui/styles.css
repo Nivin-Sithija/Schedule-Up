@@ -27,3 +27,64 @@
 @media(min-width:961px) and (max-width:1250px){.task-calendar-layout .calendar-days{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:1100px){.task-calendar-layout{grid-template-columns:210px minmax(0,1fr);gap:14px}.calendar-navigator{padding:12px}.navigator-heading h3{font-size:12px}}
 @media(max-width:800px){.task-calendar-layout{grid-template-columns:minmax(0,1fr)}.calendar-navigator{width:100%;max-width:320px;justify-self:center;padding:16px}.navigator-heading h3{font-size:14px}.navigator-dates button{aspect-ratio:auto;min-height:32px;width:32px;justify-self:center}.task-calendar-layout .day-tasks{max-height:240px}}
+
+/* Compact mobile layouts with a persistent drawer trigger, no top nav bar. */
+.mobile-menu-toggle,.mobile-nav-close,.mobile-nav-backdrop{display:none}
+.app-shell>*{min-width:0}
+.message p,.scheduled-message,.template-content,.task h3{overflow-wrap:anywhere}
+@media(max-width:960px){
+  main,.conversation,.context-panel,.client-list,.task-calendar-layout,.calendar-datebar{min-width:0}
+  .section-heading{flex-wrap:wrap;gap:12px}
+  .channel-filters,.template-category-tabs{max-width:100%;overflow-x:auto;flex-wrap:nowrap}
+  .template-category-tabs>button,.channel-filters>button{flex-shrink:0}
+}
+@media(max-width:700px){
+  html,body,#root{min-width:0;width:100%;margin:0}
+  .app-shell{display:block;min-height:100dvh;width:100%}
+  .app-shell>main{padding:66px 16px 24px;width:100%;min-width:0}
+  .mobile-menu-toggle{display:flex;position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);right:14px;z-index:82;width:44px;height:44px;padding:10px;border-radius:13px;background:#fff;box-shadow:0 3px 18px #14171e14}
+  .mobile-nav-backdrop{display:block;position:fixed;inset:0;z-index:79;width:100%;height:100dvh;border:0;border-radius:0;background:#14171e66;backdrop-filter:blur(2px)}
+  .sidebar{position:fixed;inset:0 auto 0 0;z-index:81;width:min(300px,86vw);height:100dvh;padding:28px 20px calc(20px + env(safe-area-inset-bottom,0px));border:0;overflow-y:auto;transform:translateX(-100%);visibility:hidden;transition:transform .2s ease,visibility .2s;box-shadow:8px 0 32px #14171e14}
+  .sidebar.mobile-open{display:flex;transform:translateX(0);visibility:visible}
+  .sidebar .brand{font-size:20px;max-width:calc(100% - 36px);margin-bottom:36px}
+  .mobile-nav-close{display:flex;position:absolute;right:14px;top:22px;width:34px;height:34px;padding:6px;border:0}
+  .sidebar nav{display:flex;flex-direction:column;gap:7px;overflow:visible;margin:0 0 28px;padding:0;border:0}
+  .sidebar nav button{width:100%;justify-content:flex-start;padding:12px 14px;font-size:14px;min-height:44px}
+  .sidebar nav button span{display:inline}
+  .sidebar .sidebar-bottom{display:flex;position:static;flex-direction:column;gap:10px;padding:22px 0 0;margin-top:auto}
+  .sidebar-bottom>button{width:100%;height:auto;min-height:44px;justify-content:flex-start;padding:10px 12px;font-size:13px}
+  .sidebar-bottom>button span{display:inline}
+  .sidebar-bottom .owner-profile{display:flex;margin-top:12px}
+  .page-header,.view-clients .page-header{margin-bottom:22px;align-items:flex-start;flex-wrap:wrap}
+  .page-header h1,.view-clients .page-header h1{font-size:26px;line-height:1.2}
+  .page-header .header-actions{flex-wrap:wrap;gap:8px}
+  .stats{padding:18px 0;margin-bottom:22px;gap:6px}
+  .stats>div{padding:0 8px;gap:7px;min-width:0}
+  .stats strong{font-size:22px}.stats small{font-size:11px}
+  .section-heading h2{font-size:18px}.section-heading{gap:10px}
+  .task-grid,.client-grid,.daily-panel,.overview-grid{grid-template-columns:minmax(0,1fr);gap:16px}
+  .task{padding:17px}.task h3{font-size:16px;line-height:1.4}
+  .task-row{gap:10px;padding:17px 0;min-width:0}.task-row-title{min-width:0}.task-row-title strong{font-size:13px}.task-row-title small{font-size:11px}
+  .task-actions{flex-wrap:wrap;gap:8px}.task-meta{flex-wrap:wrap;gap:8px;font-size:12px}
+  .tabs{max-width:100%;flex-wrap:wrap;gap:5px}.tabs button{font-size:12px;padding:9px 10px;min-height:36px}
+  .calendar-controls{flex-wrap:wrap;gap:6px}.calendar-datebar{gap:6px}.calendar-arrow{flex-shrink:0}
+  .calendar-days{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.day-heading{padding:10px}.day-tasks{padding:8px}
+  .calendar-navigator{max-width:100%;padding:16px}
+  .inbox{width:100%;min-width:0;overflow:hidden}.client-item{min-width:0}.client-item>span{min-width:0}.client-item small{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  .conversation{height:min(650px,85dvh);min-height:420px}.conversation-heading{padding:15px;gap:10px}.conversation-heading h2{font-size:17px}
+  .messages{padding:16px 12px}.message{max-width:94%;padding:12px 14px}.message p{font-size:14px;line-height:1.55}.message time{font-size:10px}
+  .composer{padding:12px}.compose-box{padding:9px 10px;gap:8px}.compose-box textarea{font-size:16px}.send-button{flex-shrink:0}
+  .draft-tools{gap:6px;flex-wrap:wrap}.draft-tools button,.draft-tools select{font-size:12px;max-width:100%}
+  .context-panel{padding:18px 14px}.scheduled-card{padding:17px}.scheduled-card-heading,.scheduled-meta{flex-wrap:wrap;gap:8px}
+  .scheduled-message,.template-content{font-size:13px;line-height:1.6}
+  .template-category-tabs>button{font-size:12px;padding:10px 12px}
+  .demo-banner{font-size:12px;line-height:1.5;gap:8px}.demo-banner button{margin-left:0;font-size:12px}
+  .modal{max-width:calc(100vw - 24px);max-height:calc(100dvh - 32px);overflow-y:auto;padding:24px 18px}
+  .login-shell{padding:20px 14px;min-height:100dvh}.login-card{width:100%;max-width:400px;padding:28px 22px}.login-card h1{font-size:32px}
+  input,textarea,select{max-width:100%}.login-card input,.dialog-form input,.dialog-form select{font-size:16px}
+  .toast-stack{left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:none;width:auto}
+}
+@media(max-width:360px){
+  .app-shell>main{padding-left:12px;padding-right:12px}.stats .icon-disc{width:30px;height:30px}.stats strong{font-size:20px}.stats>div{padding:0 5px}.calendar-datebar{gap:4px}.client-item{width:100%}
+}
+@media(prefers-reduced-motion:reduce){.sidebar{transition:none}}

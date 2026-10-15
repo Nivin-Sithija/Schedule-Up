@@ -15,6 +15,7 @@ type Dialog = { kind: 'task' | 'date' | 'schedule' | 'template' | 'client'; task
 const paths: Record<string, React.ReactNode> = {
   telegram:<><path d="m3 11 18-7-4 17-6-6-4 3 1-6z"/><path d="m8 12 9-5-6 8"/></>,
   whatsapp:<><path d="M20 11a8 8 0 0 1-12 7l-5 2 1-5A8 8 0 1 1 20 11z"/><path d="m8 7-1 2c1 3 3 5 6 6l2-1-2-2-1 1-3-3 1-1z"/></>,
+  menu: <path d="M4 6h16M4 12h16M4 18h16"/>,
   home: <><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></>,
   tasks: <><rect x="4" y="3" width="16" height="18" rx="4"/><path d="m7 8 1 1 2-2m-3 8 1 1 2-2m3-6h4m-4 7h4"/></>,
   chat: <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H4l-2 2v-9.5A8.5 8.5 0 0 1 10.5 4H13a8 8 0 0 1 8 7.5Z"/>,
@@ -53,12 +54,14 @@ function Avatar({ name, index = 0 }: { name: string; index?: number }) { return 
 function ChannelBadge({channel}:{channel:Channel}){return <span className={`channel-badge ${channel}`}><Icon name={channel} size={13}/>{channelLabel(channel)}</span>;}
 const clientNumber=(client?:Client)=>client?.phone||(client&&clientChannel(client)==='whatsapp'&&client.chatId.endsWith('@c.us')?'+'+client.chatId.split('@')[0]:'');
 async function api(path: string, method = 'GET', body?: unknown) {
-  let res:Response;try{res = await fetch(`/api${path}`, { method, headers: { ...(body===undefined?{}:{'Content-Type':'application/json'}), 'X-FollowThrough': 'dashboard' }, body: body === undefined ? undefined : JSON.stringify(body) });}catch{throw new Error('Cannot reach FollowThrough. Keep the app running and try again.');}
+  let res:Response;try{res = await fetch(`/api${path}`, { method, headers: { ...(body===undefined?{}:{'Content-Type':'application/json'}), 'X-ScheduleUp': 'dashboard' }, body: body === undefined ? undefined : JSON.stringify(body) });}catch{throw new Error('Cannot reach ScheduleUp. Keep the app running and try again.');}
   return readApiResponse(res,path);
 }
 function App() {
   const { notify, display: toastDisplay } = useToasts();
   const accountEpoch=useRef(0);
+  const [mobileNavOpen,setMobileNavOpen]=useState(false);
+  const mobileMenuButton=useRef<HTMLButtonElement>(null);
   const lastConnection = useRef<string | undefined>(undefined), reminderIds = useRef(new Set<string>());
   const [data, setData] = useState<Dashboard | null>(null), [view, setView] = useState('today'), [selected, setSelected] = useState('client-1');
   const [error, setError] = useState(''), [busy, setBusy] = useState(false), [login, setLogin] = useState(false), [password, setPassword] = useState(''), [demo, setDemo] = useState(false);
@@ -82,8 +85,23 @@ function App() {
   const messagesEnd = useRef<HTMLDivElement>(null);
   const composerInput = useRef<HTMLTextAreaElement>(null);
   const currentClient = useRef<string | undefined>(undefined), currentComposer = useRef('');
+  useEffect(()=>{setMobileNavOpen(false);},[view,demo,settings]);
+  useEffect(()=>{
+    const media=window.matchMedia('(max-width:700px)');
+    const resize=()=>{if(!media.matches)setMobileNavOpen(false);};
+    media.addEventListener('change',resize);return()=>media.removeEventListener('change',resize);
+  },[]);
+  useEffect(()=>{
+    if(!mobileNavOpen)return;
+    const drawer=document.getElementById('workspace-navigation');
+    const controls=()=>Array.from(drawer?.querySelectorAll<HTMLButtonElement>('button:not([disabled])')||[]);
+    const previous=document.body.style.overflow;document.body.style.overflow='hidden';controls()[0]?.focus();
+    const keys=(event:KeyboardEvent)=>{if(event.key==='Escape'){setMobileNavOpen(false);return;}if(event.key!=='Tab')return;const list=controls(),first=list[0],last=list.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus();}};
+    document.addEventListener('keydown',keys);
+    return()=>{document.body.style.overflow=previous;document.removeEventListener('keydown',keys);mobileMenuButton.current?.focus();};
+  },[mobileNavOpen]);
   async function refresh() { const epoch=accountEpoch.current;try { const state=await api(demo ? '/demo' : '/state');if(epoch!==accountEpoch.current)return;setData(state);if(!demo)setAccount(state.user);setLogin(false); } catch (e) { if(epoch!==accountEpoch.current)return;const msg = String(e); if (msg.includes('Please sign in')) {setLogin(true);setData(null);setAccount(null);setSettings(false);setDialog(null);setQr('');setComposer('');setSendRequest(null);setTelegramTwoFA('');setTelegramContacts([]);lastTelegram.current='';} else setError(msg); } }
-  function openSettings(){setSetupOwner(data?.settings?.ownerPhone||'');setTelegramOwner(data?.settings?.telegramOwnerPhone||data?.settings?.ownerPhone||'');setSettings(true);}
+  function openSettings(){setMobileNavOpen(false);setSetupOwner(data?.settings?.ownerPhone||'');setTelegramOwner(data?.settings?.telegramOwnerPhone||data?.settings?.ownerPhone||'');setSettings(true);}
   useEffect(()=>{if(data&&!demo&&!data.settings?.ownerPhone)openSettings();},[!!data,data?.settings?.ownerPhone,demo]);
   async function authenticateAccount(event:React.FormEvent<HTMLFormElement>){event.preventDefault();setBusy(true);setError('');try{
     const input=readAuthForm(new FormData(event.currentTarget),authMode);
@@ -147,7 +165,7 @@ function App() {
     return () => { cancelled = true; clearTimeout(timer); };
   }, [settings, pairingActive, demo]);
   async function act(fn: () => Promise<unknown>, success='Changes saved') { setBusy(true); setError(''); try { await fn(); notify(success); await refresh(); } catch (e) { setError(e instanceof Error ? e.message : String(e)); } finally { setBusy(false); } }
-  function signOut() { return act(async () => { await api('/auth/logout', 'POST', {});accountEpoch.current++;setData(null);setAccount(null);setComposer('');setSettings(false);setQr('');setPairingActive(false);setSendRequest(null);setTelegramTwoFA('');setTelegramContacts([]);lastTelegram.current='';setLogin(true); }, 'Signed out'); }
+  function signOut() { setMobileNavOpen(false);return act(async () => { await api('/auth/logout', 'POST', {});accountEpoch.current++;setData(null);setAccount(null);setComposer('');setSettings(false);setQr('');setPairingActive(false);setSendRequest(null);setTelegramTwoFA('');setTelegramContacts([]);lastTelegram.current='';setLogin(true); }, 'Signed out'); }
   const timezone = data?.config.timezone || 'Asia/Colombo';
   const fmt = (date: string) => new Intl.DateTimeFormat('en-GB', { timeZone: timezone, day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(date));
   const dueLabel = (due: string | null) => !due ? 'No deadline' : due.length === 10 ? new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC', day: 'numeric', month: 'short' }).format(new Date(`${due}T12:00:00Z`)) : fmt(due);
@@ -226,11 +244,13 @@ function App() {
 
   const titles: Record<string, [string, string]> = { today: ['Dashboard', ''], tasks: ['Tasks', ''], clients: ['Conversations', ''], review: ['Needs review', ''], numbers:['Allowed clients',''], templates: ['Templates', ''] };
   return <div className={`app-shell view-${view}`}>
-    <aside className="sidebar"><button className="brand" onClick={() => setView('today')}><span className="brand-mark"><Icon name="check" size={26}/></span><span>followthrough<span className="brand-period">.</span></span></button>
-      <nav aria-label="Main navigation">{[['today', 'home', 'Dashboard'], ['tasks', 'tasks', 'Tasks'], ['clients', 'chat', 'Conversations'], ['numbers','link','Allowed clients'], ['review', 'review', 'Needs review'], ['templates', 'template', 'Templates']].map(([id, icon, label]) => <button className={view === id ? 'selected' : ''} aria-current={view === id ? 'page' : undefined} key={id} onClick={() => setView(id)}><Icon name={icon}/><span>{label}</span>{id === 'review' && proposals.length > 0 && <b>{proposals.length}</b>}</button>)}</nav>
-      <div className="sidebar-bottom"><button aria-label="Settings and connection" onClick={openSettings}><Icon name="settings"/><span>Settings & connection</span></button><button aria-label={demo ? "Open owner workspace" : "Explore simulated demo"} onClick={() => { setDemo(!demo); setData(null); }}><Icon name={demo ? 'logout' : 'spark'}/><span>{demo ? 'Owner workspace' : 'Explore demo'}</span></button>{!demo&&account&&<button aria-label="Sign out" title="Sign out" disabled={busy} onClick={()=>void signOut()}><Icon name="logout"/><span>Sign out</span></button>}<div className="owner-profile"><Avatar name={account?.name||"Workspace Owner"}/><div><strong>{demo ? 'Demo workspace' : account?.name || 'Your workspace'}</strong><small><i/>{demo ? 'Read-only demo' : data.config.whatsapp === 'mock' ? 'Simulator connected' : data.connection}</small></div></div></div>
+    <button ref={mobileMenuButton} className="mobile-menu-toggle" aria-label={mobileNavOpen?'Close navigation':'Open navigation'} aria-controls="workspace-navigation" aria-expanded={mobileNavOpen} onClick={()=>setMobileNavOpen(!mobileNavOpen)}><Icon name={mobileNavOpen?'close':'menu'} size={22}/></button>
+    {mobileNavOpen&&<button className="mobile-nav-backdrop" aria-label="Dismiss navigation" tabIndex={-1} onClick={()=>setMobileNavOpen(false)}/>}
+    <aside id="workspace-navigation" className={`sidebar ${mobileNavOpen?'mobile-open':''}`}><button className="mobile-nav-close" aria-label="Close navigation menu" onClick={()=>setMobileNavOpen(false)}><Icon name="close" size={20}/></button><button className="brand" onClick={() => {setView('today');setMobileNavOpen(false);}}><span className="brand-mark"><Icon name="check" size={26}/></span><span>scheduleup<span className="brand-period">.</span></span></button>
+      <nav aria-label="Main navigation">{[['today', 'home', 'Dashboard'], ['tasks', 'tasks', 'Tasks'], ['clients', 'chat', 'Conversations'], ['numbers','link','Allowed clients'], ['review', 'review', 'Needs review'], ['templates', 'template', 'Templates']].map(([id, icon, label]) => <button className={view === id ? 'selected' : ''} aria-current={view === id ? 'page' : undefined} key={id} onClick={() => {setView(id);setMobileNavOpen(false);}}><Icon name={icon}/><span>{label}</span>{id === 'review' && proposals.length > 0 && <b>{proposals.length}</b>}</button>)}</nav>
+      <div className="sidebar-bottom"><button aria-label="Settings and connection" onClick={openSettings}><Icon name="settings"/><span>Settings & connection</span></button><button aria-label={demo ? "Open owner workspace" : "Explore simulated demo"} onClick={() => { setDemo(!demo); setData(null);setMobileNavOpen(false); }}><Icon name={demo ? 'logout' : 'spark'}/><span>{demo ? 'Owner workspace' : 'Explore demo'}</span></button>{!demo&&account&&<button aria-label="Sign out" title="Sign out" disabled={busy} onClick={()=>void signOut()}><Icon name="logout"/><span>Sign out</span></button>}<div className="owner-profile"><Avatar name={account?.name||"Workspace Owner"}/><div><strong>{demo ? 'Demo workspace' : account?.name || 'Your workspace'}</strong><small><i/>{demo ? 'Read-only demo' : data.config.whatsapp === 'mock' ? 'Simulator connected' : data.connection}</small></div></div></div>
     </aside>
-    <main><header className="page-header"><div><h1>{titles[view][0]}</h1></div><div className="header-right"><span>{new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: timezone }).format(new Date())}</span><span className="icon-disc"><Icon name="calendar"/></span><button className="icon-button notification-button" aria-label={`${notifications.length} unread reminders`} onClick={() => setView('today')}><Icon name="bell"/>{notifications.length > 0 && <i/>}</button></div></header>
+    <main inert={mobileNavOpen || undefined}><header className="page-header"><div><h1>{titles[view][0]}</h1></div><div className="header-right"><span>{new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: timezone }).format(new Date())}</span><span className="icon-disc"><Icon name="calendar"/></span><button className="icon-button notification-button" aria-label={`${notifications.length} unread reminders`} onClick={() => {setView('today');setMobileNavOpen(false);}}><Icon name="bell"/>{notifications.length > 0 && <i/>}</button></div></header>
       {demo && <div className="demo-banner"><Icon name="spark" size={16}/><span>You’re exploring a simulated workspace. Messages and actions are read-only.</span><button onClick={() => { setDemo(false); setData(null); }}>Open my workspace <Icon name="arrow" size={14}/></button></div>}
       {error && <div className="alert" role="alert"><span>{error}</span><button aria-label="Dismiss error" onClick={() => setError('')}><Icon name="close" size={16}/></button></div>}
       {view === 'today' && <>

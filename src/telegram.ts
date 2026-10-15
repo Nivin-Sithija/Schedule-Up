@@ -64,7 +64,7 @@ async function open(){
   if(opening.has(tenant))return opening.get(tenant)!;
   const work=(async()=>{
     await expectedPhone();if(old){if(old.timer)clearTimeout(old.timer);await old.client.destroy().catch(()=>{});}
-    const session=await readTelegramSession(),client=new TelegramClient(new StringSession(session),config.TELEGRAM_API_ID,config.TELEGRAM_API_HASH,{connectionRetries:3,requestRetries:1,floodSleepThreshold:0,baseLogger:new Logger(LogLevel.NONE),deviceModel:'FollowThrough',appVersion:'0.1.0'});
+    const session=await readTelegramSession(),client=new TelegramClient(new StringSession(session),config.TELEGRAM_API_ID,config.TELEGRAM_API_HASH,{connectionRetries:3,requestRetries:1,floodSleepThreshold:0,baseLogger:new Logger(LogLevel.NONE),deviceModel:'ScheduleUp',appVersion:'0.1.0'});
     const link:Link={client,status:'CONNECTING',started:Date.now(),passwordAttempts:0};links.set(tenant,link);
     client.addEventHandler(async update=>{if(update instanceof Api.UpdateLoginToken)await withWorkspace(tenant,()=>advance(link,true));});
     try{await bounded(client.connect());if(await bounded(client.checkAuthorization())){await connected(link);return link;}await advance(link);schedule(link,tenant);return link;}

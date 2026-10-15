@@ -3,7 +3,7 @@
 | Area | Documents |
 |---|---|
 | Architecture | [Detailed architecture](architecture/ARCHITECTURE.md), [component overview and diagram](architecture/SYSTEM-OVERVIEW.md) |
-| Deployment | [Render hosting and cutover](deployment/HOSTING.md) |
+| Deployment | [Render hosting and cutover](deployment/HOSTING.md), [security and CI/CD](deployment/SECURITY-AND-CI.md) |
 | Demo | [Read-only demo walkthrough](guides/DEMO.md) |
 | Planning | [Project scope](planning/task.md) |
 | Submission | [Active target tracks](submission/TRACK-AUDIT.md), [write-up template](submission/template.md) |

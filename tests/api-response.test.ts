@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readApiResponse } from '../src/ui/api-response.js';
 test('HTML gateway failures show a useful retry message without exposing the HTML', async () => {
-  await assert.rejects(readApiResponse(new Response('<!DOCTYPE html><html>Gateway failure</html>', {status:502}), '/auth/login'), /^Error: FollowThrough is temporarily unavailable \(HTTP 502\)/);
+  await assert.rejects(readApiResponse(new Response('<!DOCTYPE html><html>Gateway failure</html>', {status:502}), '/auth/login'), /^Error: ScheduleUp is temporarily unavailable \(HTTP 502\)/);
 });
 test('unexpected successful HTML responses do not leak a JSON parser error', async () => {
   await assert.rejects(readApiResponse(new Response('<!DOCTYPE html><html>Wrong server</html>'), '/auth/login'), /unexpected response \(HTTP 200\)/);

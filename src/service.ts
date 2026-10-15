@@ -8,6 +8,8 @@ import { search, indexMessages } from './retrieval.js';
 import { send } from './connector.js';
 import { confirmSend, markUncertain } from './outbox.js';
 import { trace, captureError } from './telemetry.js';
+import { operationLimits } from './limits.js';
+import { workspaceId } from './tenant.js';
 export async function invalidateSchedules(clientId: string) { await mutate(s => { for (const item of s.schedules) if (item.clientId === clientId && item.status === 'approved') { item.status = 'paused'; item.error = 'New conversation activity. Review before reapproving.'; } }); }
 export async function persistMessages(batch: Message[]) {
   await mutate(s => { for (const m of batch) { if (!s.messages.some(existing => existing.id === m.id)) { s.messages.push(m); s.sequence[m.clientId] = (s.sequence[m.clientId] || 0) + 1; } } });
@@ -23,6 +25,7 @@ export async function processBatch(batch: Message[]) {
   const context = boundedContext(snapshot, clientId, pending);
   const persistence = persistMessages(pending); // Direct batch reaches inference: no write-then-reread.
   try {
+    operationLimits.consume(`analysis:${workspaceId()}`,40,15*60000);
     const indexed = await search(clientId, pending.map(m => m.text).join(' ')).catch(() => []);
     const boundary = contextBoundary(snapshot, clientId);
     const activeEvidence = new Set(context.tasks.flatMap(t=>t.evidence));

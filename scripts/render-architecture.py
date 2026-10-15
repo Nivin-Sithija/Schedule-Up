@@ -46,7 +46,7 @@ def card(x,y,w,h,title,badge,accent,rows,tag=None):
  if tag:text(x+21,y+h-34,tag,17,'#8490a1')
 # Title and legend
 box(48,37,51,51,fill='#14171e',stroke='#14171e',r=16,width=0);line([(61,64),(70,73),(87,53)],'#ffffff',4)
-text(117,37,'FollowThrough',36,'#14171e',True);text(117,82,'High-level system architecture',22,'#748195')
+text(117,37,'ScheduleUp',36,'#14171e',True);text(117,82,'High-level system architecture',22,'#748195')
 text(1360,48,'Solid paths: implemented components',19);line([(1320,58),(1348,58)],'#58728e',3)
 text(1360,82,'Boundary: hosted application and connectors',19);line([(1320,92),(1348,92)],'#7696bc',3,True)
 # App boundary (target deployment, not current runtime grouping)
@@ -83,6 +83,6 @@ text(49,1191,'Incoming batches reach inference directly; Tiger persistence runs 
 text(49,1220,'AI never sends on its own. Replies are owner-reviewed; scheduled sends require an unchanged task, conversation and approval.',19,'#647286')
 svg.append('</svg>')
 root=Path(__file__).resolve().parents[1]/'docs'/'architecture';root.mkdir(parents=True,exist_ok=True)
-(root/'followthrough-architecture.svg').write_text('\n'.join(svg))
-im.save(root/'followthrough-architecture.png')
-print('Created docs/architecture/followthrough-architecture.svg and .png')
+(root/'scheduleup-architecture.svg').write_text('\n'.join(svg))
+im.save(root/'scheduleup-architecture.png')
+print('Created docs/architecture/scheduleup-architecture.svg and .png')
