@@ -33,7 +33,8 @@ Both channels feed a shared deadline calendar, with channel badges, evidence lin
 owner-reviewed drafts/templates and approved follow-ups. Gemma runs through Ollama
 in development and Mastra orchestrates generation. Tiger stores account-scoped state
 and hybrid retrieval; Temporal carries durable account-scoped workflows. Telegram
-uses GramJS with encrypted sessions. Do not claim SMS support, live Telegram success,
-Render deployment, first-user payment, Sentry screenshots or Backboard evidence until
-those have actually been demonstrated. See VALIDATION.md for recorded checks.
+uses GramJS with encrypted sessions. Render and scheduleup.tech are live; the owner
+confirmed both channel connections. Hosted Gemma extraction and drafting passed.
+Sentry is excluded from the active targets. Do not claim SMS, first-user payment or
+unverified workflow outcomes. See VALIDATION.md for recorded checks.
 -->

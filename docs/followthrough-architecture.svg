@@ -4,9 +4,9 @@
 <polyline points="61,64 70,73 87,53" fill="none" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/>
 <text x="117" y="67.6" font-family="Arial,Helvetica,sans-serif" font-size="36" fill="#14171e" font-weight="700">FollowThrough</text>
 <text x="117" y="100.7" font-family="Arial,Helvetica,sans-serif" font-size="22" fill="#748195" font-weight="400">High-level system architecture</text>
-<text x="1360" y="64.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#4b596b" font-weight="400">Solid paths: implemented locally</text>
+<text x="1360" y="64.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#4b596b" font-weight="400">Solid paths: implemented components</text>
 <polyline points="1320,58 1348,58" fill="none" stroke="#58728e" stroke-width="3" stroke-linejoin="round"/>
-<text x="1360" y="98.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#4b596b" font-weight="400">Dashed boundary / path: deployment or export pending</text>
+<text x="1360" y="98.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#4b596b" font-weight="400">Boundary: hosted application and connectors</text>
 <polyline points="1320,92 1348,92" fill="none" stroke="#7696bc" stroke-width="3" stroke-linejoin="round" stroke-dasharray="9 8"/>
 <polyline points="316,165 1647,165" fill="none" stroke="#8aa7ca" stroke-width="2" stroke-linejoin="round" stroke-dasharray="9 8"/>
 <polyline points="316,1160 1647,1160" fill="none" stroke="#8aa7ca" stroke-width="2" stroke-linejoin="round" stroke-dasharray="9 8"/>
@@ -14,7 +14,7 @@
 <polyline points="1669,187 1669,1138" fill="none" stroke="#8aa7ca" stroke-width="2" stroke-linejoin="round" stroke-dasharray="9 8"/>
 <rect x="294" y="165" width="1375" height="995" rx="22" fill="#fcfdff" stroke="#8aa7ca" stroke-width="2" stroke-dasharray="9 8"/>
 <rect x="319" y="146" width="1090" height="38" rx="4" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
-<text x="332" y="169.7" font-family="Arial,Helvetica,sans-serif" font-size="22" fill="#426d9d" font-weight="700">APPLICATION + CONNECTORS  /  Render deployment target — not yet deployed</text>
+<text x="332" y="169.7" font-family="Arial,Helvetica,sans-serif" font-size="22" fill="#426d9d" font-weight="700">APPLICATION + CONNECTORS  /  Render · three Starter services</text>
 <rect x="42" y="235" width="215" height="215" rx="18" fill="#fff" stroke="#dfe5ed" stroke-width="2"/>
 <rect x="43" y="236" width="213" height="65" rx="16" fill="#182c49" stroke="#182c49" stroke-width="0"/>
 <rect x="59" y="250" width="36" height="36" rx="10" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
@@ -93,7 +93,7 @@
 <text x="788" y="798.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Activity retries + reminders</text>
 <circle cx="772" cy="832" r="3" fill="#c08537"/>
 <text x="788" y="840.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Persistent follow-up timers</text>
-<text x="769" y="869.45" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#8490a1" font-weight="400">Local: SQLite development server</text>
+<text x="769" y="869.45" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#8490a1" font-weight="400">Pilot: SQLite server + persistent disk</text>
 <rect x="1250" y="608" width="378" height="323" rx="18" fill="#fff" stroke="#dfe5ed" stroke-width="2"/>
 <rect x="1251" y="609" width="376" height="65" rx="16" fill="#326ba1" stroke="#326ba1" stroke-width="0"/>
 <rect x="1267" y="623" width="36" height="36" rx="10" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
@@ -133,20 +133,20 @@
 <circle cx="1772" cy="706" r="3" fill="#287f84"/>
 <text x="1788" y="714.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Ollama · working locally</text>
 <circle cx="1772" cy="748" r="3" fill="#287f84"/>
-<text x="1788" y="756.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">OpenRouter · hosted target</text>
+<text x="1788" y="756.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">OpenRouter · Google BYOK</text>
 <circle cx="1772" cy="790" r="3" fill="#287f84"/>
 <text x="1788" y="798.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Commitments + reply drafts</text>
-<text x="1769" y="827.45" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#8490a1" font-weight="400">Hosted inference not yet tested</text>
+<text x="1769" y="827.45" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#8490a1" font-weight="400">Hosted extraction + draft checks passed</text>
 <rect x="1748" y="941" width="410" height="210" rx="18" fill="#fff" stroke="#dfe5ed" stroke-width="2"/>
 <rect x="1749" y="942" width="408" height="65" rx="16" fill="#8467a4" stroke="#8467a4" stroke-width="0"/>
 <rect x="1765" y="956" width="36" height="36" rx="10" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
-<text x="1773" y="980.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#8467a4" font-weight="700">S</text>
-<text x="1814" y="983.4" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#ffffff" font-weight="700">Sentry tracing</text>
+<text x="1773" y="980.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#8467a4" font-weight="700">R</text>
+<text x="1814" y="983.4" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#ffffff" font-weight="700">Live deployment</text>
 <circle cx="1772" cy="1039" r="3" fill="#8467a4"/>
-<text x="1788" y="1047.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Agent / retrieval / commit spans</text>
+<text x="1788" y="1047.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">scheduleup.tech · HTTPS</text>
 <circle cx="1772" cy="1081" r="3" fill="#8467a4"/>
-<text x="1788" y="1089.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Latency + token attributes</text>
-<text x="1769" y="1131.45" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#8490a1" font-weight="400">Export disabled · DSN pending</text>
+<text x="1788" y="1089.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Three Starter services</text>
+<text x="1769" y="1131.45" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#8490a1" font-weight="400">$21.50/month base + usage extras</text>
 <polyline points="257,324 334,324" fill="none" stroke="#58728e" stroke-width="3" stroke-linejoin="round"/>
 <polygon points="334,324 322.0,330.0 322.0,318.0" fill="#58728e"/>
 <polygon points="257,324 269.0,318.0 269.0,330.0" fill="#58728e"/>
@@ -192,13 +192,9 @@
 <polygon points="484,889 490.0,901.0 478.0,901.0" fill="#698a7a"/>
 <rect x="661" y="954" width="460.0" height="28" rx="5" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
 <text x="668" y="973.3" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#5b718c" font-weight="400">Approved follow-ups → send eligibility check → channel</text>
-<polyline points="1628,865 1689,865 1689,1028 1748,1028" fill="none" stroke="#947cae" stroke-width="3" stroke-linejoin="round" stroke-dasharray="9 8"/>
-<polygon points="1748,1028 1736.0,1034.0 1736.0,1022.0" fill="#947cae"/>
-<rect x="1692" y="883" width="93.984375" height="28" rx="5" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
-<text x="1699" y="902.3" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#5b718c" font-weight="400">Telemetry</text>
 <rect x="332" y="1041" width="1298" height="88" rx="12" fill="#f2f5f9" stroke="#e4eaf1" stroke-width="1"/>
-<text x="352" y="1075.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#52667d" font-weight="400">Current local setup: API + Ollama on host; Docker Compose runs WAHA + Temporal.</text>
-<text x="352" y="1109.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#52667d" font-weight="400">Render target: app / embedded worker + private WAHA + private Temporal; Tiger stays external.</text>
+<text x="352" y="1075.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#52667d" font-weight="400">Development: API + Ollama on host; Docker Compose runs WAHA + Temporal.</text>
+<text x="352" y="1109.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#52667d" font-weight="400">Hosted: app / embedded worker + private WAHA + private Temporal; Tiger stays external.</text>
 <text x="49" y="1208.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#647286" font-weight="400">Incoming batches reach inference directly; Tiger persistence runs alongside analysis. Validated results update the shared calendar.</text>
 <text x="49" y="1236.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#647286" font-weight="400">AI never sends on its own. Replies are owner-reviewed; scheduled sends require an unchanged task, conversation and approval.</text>
 </svg>

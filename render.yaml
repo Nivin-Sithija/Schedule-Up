@@ -47,8 +47,6 @@ services:
         sync: false
       - key: SESSION_ENCRYPTION_KEY
         sync: false
-      - key: SENTRY_DSN
-        sync: false
   - type: pserv
     name: followthrough-waha
     runtime: image

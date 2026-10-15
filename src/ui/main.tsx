@@ -7,6 +7,7 @@ import {templateCategories,categoryLabels,categoryStarters,type Template,type Te
 import { fourDayCalendar, calendarDate, calendarDayOffset, monthCalendar } from '../task-calendar.js';
 import {readAuthForm} from './auth-form.js';
 import { useToasts } from './toasts.js';
+import { readApiResponse } from './api-response.js';
 
 type Account = {id:string;name:string;email:string};
 type Dashboard = State & { user?:Account; config: { provider: string; model: string; whatsapp: string; telegram?:boolean; durability: string; timezone: string; localOnly: boolean } };
@@ -53,7 +54,7 @@ function ChannelBadge({channel}:{channel:Channel}){return <span className={`chan
 const clientNumber=(client?:Client)=>client?.phone||(client&&clientChannel(client)==='whatsapp'&&client.chatId.endsWith('@c.us')?'+'+client.chatId.split('@')[0]:'');
 async function api(path: string, method = 'GET', body?: unknown) {
   let res:Response;try{res = await fetch(`/api${path}`, { method, headers: { ...(body===undefined?{}:{'Content-Type':'application/json'}), 'X-FollowThrough': 'dashboard' }, body: body === undefined ? undefined : JSON.stringify(body) });}catch{throw new Error('Cannot reach FollowThrough. Keep the app running and try again.');}
-  const out = await res.json(); if (!res.ok) throw new Error(res.status===401&&!path.startsWith('/auth/')?'Please sign in to continue':out.details?.[0] || out.error || 'Request failed'); return out;
+  return readApiResponse(res,path);
 }
 function App() {
   const { notify, display: toastDisplay } = useToasts();

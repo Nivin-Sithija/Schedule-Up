@@ -71,11 +71,9 @@ Owner approval is required for immediate replies and exact scheduled recipient/t
 
 The current UI can cancel schedules and create new approvals. Automatic historical reconciliation and an explicit reapprove/edit workflow are outstanding; uncertain sends require inspection in WhatsApp. Sender IDs prevent repeated immediate-send requests from being dispatched twice.
 
-## Observability and tracks
+## Target tracks
 
-Set `SENTRY_DSN` to instrument inference, retrieval, task commits and scheduled dispatch. Phone numbers, request bodies and conversation payloads are not intentionally included. Token counts are attached when supplied by the model. Provider-quota accounting, complete cost reporting, trace propagation across workflow boundaries and the benchmark report still require completion before claiming full Sentry evidence.
-
-Gemma and Mastra are essential to extraction/drafting; Tiger stores confirmed state and retrieves agreements; Temporal owns timers/recovery; Render hosts the app. Backboard/R-CLI development evidence has not been collected, so do not claim that track yet. Follow `template.md` for the final submission and report actual pilot feedback rather than invented results.
+The active targets are Gemma, Mastra, Tiger Data, Temporal and Render. Gemma and Mastra power extraction and drafting; Tiger stores confirmed state and retrieves agreements; Temporal owns durable processing and timers; Render hosts the app. Sentry was removed from the project plan at the owner's request. Follow `template.md` for the final submission and report actual pilot feedback rather than invented results.
 
 ## Attribution
 

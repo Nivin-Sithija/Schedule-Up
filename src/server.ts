@@ -20,7 +20,8 @@ import { captureError } from './telemetry.js';
 import { runWorker } from './worker.js';
 import { workspaceSetupSchema, applyWorkspaceSetup, phoneSchema } from './workspace-settings.js';
 import { templateSchema } from './template-validation.js';
-import { emptyState, deadlineSchema } from './domain.js';
+import { deadlineSchema } from './domain.js';
+import { demoState } from './demo.js';
 await initStore(); await initAuthStore(); await initRetrieval(); await initRuntime();await initTelegram();
 const app = Fastify({ logger: { redact: ['req.headers.cookie','req.headers.authorization','req.body'] }, bodyLimit: 65536 });
 await app.register(cookie);
@@ -107,7 +108,7 @@ app.post('/api/telegram/password',async(req)=>{await rateLimit(`telegram-passwor
 app.post('/api/telegram/disconnect',async()=>disconnectTelegram());
 app.get('/api/telegram/dialogs',async()=>({dialogs:await telegramDialogs()}));
 app.post('/api/telegram/clients',async(req)=>{const input=z.object({peerId:z.string().regex(/^\d+$/)}).parse(req.body);return allowTelegramClient(input.peerId);});
-app.get('/api/demo',async()=>{const s=emptyState([{id:'demo-alex',name:'Alex Morgan',chatId:'demo'},{id:'demo-sam',name:'Sam Rivera',chatId:'123456789',channel:'telegram'}]); s.messages=[{id:'example-1',clientId:'demo-alex',speaker:'client',text:'Could you send the revised proposal Friday?',sentAt:'2026-10-13T08:00:00Z',origin:'mock'},{id:'example-2',clientId:'demo-alex',speaker:'owner',text:'Yes, I’ll send it Friday morning.',sentAt:'2026-10-13T08:01:00Z',origin:'mock'}];s.messages.push({id:'example-telegram',clientId:'demo-sam',channel:'telegram',speaker:'owner',text:'I will send the logo artwork on Saturday.',sentAt:'2026-10-13T08:02:00Z',origin:'mock'});s.tasks=[{id:'example-telegram-task',clientId:'demo-sam',channel:'telegram',title:'Send logo artwork',responsible:'owner',status:'open',due:'2026-10-17',evidence:['example-telegram'],revision:1,manual:false,updatedAt:'2026-10-13T08:02:00Z'},{id:'example-task',clientId:'demo-alex',title:'Send revised proposal',responsible:'owner',status:'open',due:'2026-10-16',evidence:['example-1','example-2'],revision:1,manual:false,updatedAt:'2026-10-13T08:01:00Z'}];return {...s,config:{provider:'simulated',model:'Read-only example',whatsapp:'mock',durability:'simulated',timezone:config.APP_TIMEZONE,localOnly:true}};});
+app.get('/api/demo',async()=>demoState(config.APP_TIMEZONE));
 app.post('/api/mock/messages',async(req)=>{
   if(config.WHATSAPP_PROVIDER!=='mock') throw new Error('Simulator is disabled on the connected account');
   const body=z.object({clientId:z.string(),speaker:z.enum(['owner','client']),text:z.string().trim().min(1).max(4000)}).parse(req.body);

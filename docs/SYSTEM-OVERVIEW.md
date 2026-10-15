@@ -15,10 +15,9 @@
 | Temporal | Records incoming signals durably, serializes per-client batches, retries failed analysis activities, and maintains reminder/follow-up timers across worker restarts. Its local SQLite development server has its own history disk. |
 | Mastra | Runs the actual Gemma agent calls for extraction, repair and editable drafts. Today bounded context/retrieval, validation and task commits are application code around those calls, not Mastra memory/tools or a Mastra workflow. |
 | Gemma | Interprets both speakers: request versus commitment, who owes what, agreed dates, changes and completion. It produces proposed structured changes or editable text. It has no send authority. |
-| Ollama / OpenRouter | Alternative inference routes for Gemma. Ollama is the working local endpoint; OpenRouter is the selected hosted route and still needs an authenticated end-to-end test. |
+| Ollama / OpenRouter | Alternative inference routes for Gemma. Ollama is the working local endpoint; OpenRouter is the hosted route, using a prioritized Google AI Studio provider key. Hosted commitment extraction and editable drafting have passed; real message-to-calendar acceptance testing is pending. |
 | Tiger Data | PostgreSQL is the authoritative store for account state, messages, tasks, approvals and encrypted Telegram sessions. pgvector plus full-text search retrieves relevant prior agreements with account/client isolation. |
-| Sentry | Instrumentation measures model calls, retrieval, task commits and dispatch. Export remains disabled until a DSN is configured; connected trace evidence is still pending. |
-| Render | Target hosting for the dashboard/API/embedded worker and private WAHA/Temporal services. The blueprint exists; the hosted deployment has not been verified. |
+| Render | Hosts the live dashboard/API/embedded worker and private WAHA/Temporal services on three Starter instances. The custom domain is https://scheduleup.tech. |
 | Docker Compose | Starts the local WAHA and Temporal services. In the current local setup, the API and Ollama run on the host. |
 
 ## How an incoming message becomes a task
@@ -34,4 +33,4 @@
 
 An immediate reply uses the owner's reviewed text and selected conversation. A scheduled follow-up also requires an exact approved time, unchanged task revision and unchanged conversation sequence. Temporal supplies the timer; deterministic application checks decide whether sending is still permitted. New activity pauses the follow-up. Unknown provider delivery is not automatically retried.
 
-The PNG and SVG depict a high-level grouping. GramJS and the activity worker are embedded in the API process; the cards are logical responsibilities, not a claim that each is a separate microservice. Solid arrows show implemented local paths. The dashed Render boundary and Sentry export path indicate deployment/evidence work still pending.
+The PNG and SVG depict a high-level grouping. GramJS and the activity worker are embedded in the API process; the cards are logical responsibilities, not a claim that each is a separate microservice. Solid arrows show implemented paths. The boundary groups the hosted app and private connectors; Tiger and hosted model inference remain external. Sentry is excluded from the active plan.

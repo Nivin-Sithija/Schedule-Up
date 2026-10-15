@@ -9,7 +9,7 @@ This is a single-instance pilot deployment. The app/embedded worker, private WAH
 3. Run `node_modules/.bin/node --env-file-if-exists=.env --import tsx scripts/prepare-render-secrets.ts`. It writes ignored mode-0600 secret files under `data/deploy/`, does not upload anything and never prints secret values. Do not commit these files.
 4. This preserves the EXISTING Telegram encryption key because encrypted sessions already live in Tiger. A new unrelated key cannot read those sessions. Retain a secure backup. The helper assumes the default local `data/` path; if DATA_PATH was customized, migrate its existing key explicitly.
 5. The app secret file includes TIGER_CA_BASE64 derived from the trusted local certificate. This takes precedence over TIGER_CA_PATH and preserves certificate/hostname verification without depending on a laptop filesystem path.
-6. Supply SENTRY_DSN if trace evidence is required; a blank value leaves export disabled. Hosted Telegram requires its app ID/hash and the preserved SESSION_ENCRYPTION_KEY.
+6. Hosted Telegram requires its app ID/hash and the preserved SESSION_ENCRYPTION_KEY. Sentry is excluded from the active plan; no DSN setup is required.
 
 ## Deployment values
 
@@ -24,7 +24,7 @@ This is a single-instance pilot deployment. The app/embedded worker, private WAH
 
 Stop the local API/embedded worker before the hosted API first starts using these existing workspaces. Leave local data and volumes intact. Existing encrypted Telegram sessions can restore with the preserved key. WhatsApp credentials live in a separate local WAHA volume; expect to link the new hosted WAHA session by QR rather than assuming they migrated with Tiger. Current schedules are in Tiger and are re-enqueued; review or cancel obsolete approvals before cutover.
 
-After deploy: health endpoint 200; HTTPS login; database reads/writes; Telegram restore; WhatsApp pairing/verified number; allowed-client ingestion in both directions; automatic tasks/calendar; reviewed sends; follow-up pause; one approved scheduled send; app restart with preserved tasks and connections. Confirm Sentry events if configured. Repeat using the .tech origin after its DNS/HTTPS setup.
+After deploy: health endpoint 200; HTTPS login; database reads/writes; Telegram restore; WhatsApp pairing/verified number; allowed-client ingestion in both directions; automatic tasks/calendar; reviewed sends; follow-up pause; one approved scheduled send; app restart with preserved tasks and connections. Repeat using the .tech origin after its DNS/HTTPS setup.
 
 ## Budget review before creating services
 
@@ -44,4 +44,4 @@ The app is live at `https://followthrough.onrender.com` on Starter. All three se
 
 The selected custom domain is `scheduleup.tech`, added to Render together with its www redirect. Its authoritative nameservers are the `.tech domains` OrderBox nameservers. Required DNS: apex A `216.24.57.1`; www CNAME `followthrough.onrender.com`. Render verified both domains, and Google Public DNS returns the expected apex A and www CNAME records. HTTPS activation subsequently passed direct certificate-verified checks: apex /api/health returned 200 with {"ok":true}, and www returned a 301 redirect to https://scheduleup.tech/. The laptop's ordinary resolver still retained negative DNS cache results at that time.
 
-OpenRouter's free Gemma endpoint still returned HTTP 429: the Google AI Studio shared upstream pool is rate-limited. The key reports 50/50 free daily requests remaining and $1 spending limit remaining. The owner was asked to add a free-tier Google AI Studio provider key as prioritized BYOK in OpenRouter; no paid model was selected. Hosted AI acceptance checks remain pending.
+OpenRouter's shared Google pool initially returned HTTP 429 despite unused account quota. A prioritized Google AI Studio provider key resolved that blocker. Hosted Gemma passed acceptance, counteroffer and later-agreement extraction scenarios, plus editable drafting. The account's existing OpenRouter key was reused; no paid model or Google billing was enabled by the agent. The real hosted message-to-calendar test remains pending.
