@@ -131,12 +131,12 @@
 <text x="1773" y="647.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#287f84" font-weight="700">G</text>
 <text x="1814" y="650.4" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#ffffff" font-weight="700">Gemma inference</text>
 <circle cx="1772" cy="706" r="3" fill="#287f84"/>
-<text x="1788" y="714.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Ollama · working locally</text>
+<text x="1788" y="714.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">OpenRouter · hosted Gemma</text>
 <circle cx="1772" cy="748" r="3" fill="#287f84"/>
-<text x="1788" y="756.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">OpenRouter · Google BYOK</text>
+<text x="1788" y="756.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Primary 26B / fallback 31B</text>
 <circle cx="1772" cy="790" r="3" fill="#287f84"/>
 <text x="1788" y="798.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Commitments + reply drafts</text>
-<text x="1769" y="827.45" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#8490a1" font-weight="400">Hosted extraction + draft checks passed</text>
+<text x="1769" y="827.45" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#8490a1" font-weight="400">Primary passes; fallback degraded at audit</text>
 <rect x="1748" y="941" width="410" height="210" rx="18" fill="#fff" stroke="#dfe5ed" stroke-width="2"/>
 <rect x="1749" y="942" width="408" height="65" rx="16" fill="#8467a4" stroke="#8467a4" stroke-width="0"/>
 <rect x="1765" y="956" width="36" height="36" rx="10" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
@@ -146,7 +146,7 @@
 <text x="1788" y="1047.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">scheduleup.tech · HTTPS</text>
 <circle cx="1772" cy="1081" r="3" fill="#8467a4"/>
 <text x="1788" y="1089.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Three Starter services</text>
-<text x="1769" y="1131.45" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#8490a1" font-weight="400">$21.50/month base + usage extras</text>
+<text x="1769" y="1131.45" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#8490a1" font-weight="400">One instance per Render service</text>
 <polyline points="257,324 334,324" fill="none" stroke="#58728e" stroke-width="3" stroke-linejoin="round"/>
 <polygon points="334,324 322.0,330.0 322.0,318.0" fill="#58728e"/>
 <polygon points="257,324 269.0,318.0 269.0,330.0" fill="#58728e"/>
@@ -193,7 +193,7 @@
 <rect x="661" y="954" width="460.0" height="28" rx="5" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
 <text x="668" y="973.3" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#5b718c" font-weight="400">Approved follow-ups → send eligibility check → channel</text>
 <rect x="332" y="1041" width="1298" height="88" rx="12" fill="#f2f5f9" stroke="#e4eaf1" stroke-width="1"/>
-<text x="352" y="1075.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#52667d" font-weight="400">Development: API + Ollama on host; Docker Compose runs WAHA + Temporal.</text>
+<text x="352" y="1075.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#52667d" font-weight="400">App service embeds the activity worker, Mastra agents and GramJS adapter.</text>
 <text x="352" y="1109.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#52667d" font-weight="400">Hosted: app / embedded worker + private WAHA + private Temporal; Tiger stays external.</text>
 <text x="49" y="1208.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#647286" font-weight="400">Incoming batches reach inference directly; Tiger persistence runs alongside analysis. Validated results update the shared calendar.</text>
 <text x="49" y="1236.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#647286" font-weight="400">AI never sends on its own. Replies are owner-reviewed; scheduled sends require an unchanged task, conversation and approval.</text>

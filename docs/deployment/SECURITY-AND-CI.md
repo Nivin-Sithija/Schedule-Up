@@ -4,7 +4,7 @@ ScheduleUp treats messages, retrieved text, templates and model output as untrus
 
 These controls reduce risk; pattern detection cannot identify every encoded, multilingual or novel prompt injection. Original conversations are retained as text. React escapes displayed content; the UI does not execute message HTML. Hosted responses restrict scripts to same-origin files, forbid framing and objects, and apply HSTS, MIME and referrer protections. QR images remain supported through data URLs.
 
-Unsafe dashboard requests require a dashboard header and a trusted origin when present. The renamed header is `X-ScheduleUp`; the legacy header remains accepted for cached clients. Signed WAHA webhooks use their own authentication. Existing account isolation, hashed sessions, serialized scrypt password hashing, channel allowlists and encrypted Telegram sessions remain in force.
+Unsafe dashboard requests require a dashboard header and a trusted origin when present. The dashboard uses `X-ScheduleUp`; `X-FollowThrough` remains accepted for compatible clients. Signed WAHA webhooks use their own authentication. Existing account isolation, hashed sessions, serialized scrypt password hashing, channel allowlists and encrypted Telegram sessions remain in force.
 
 ## Limits
 
@@ -28,7 +28,7 @@ Quota responses use HTTP 429 and `Retry-After`. Counters are bounded, in-process
 
 Only successful main checks reach the serialized Render deployment job. Configure repository secret `RENDER_API_KEY`; the script verifies the service/repository and current main revision before cutover. It suspends the previous embedded worker before resume, verifies the exact checked commit, and attempts rollback to the previous live revision on failure. This single-worker pilot accepts brief deployment downtime to avoid overlapping Telegram sessions. Rollback failure requires operator inspection; GitHub reports it as a failed job. Render's independent auto-deploy stays disabled.
 
-The audit currently has five moderate production advisories and no high/critical advisories. No major dependency upgrades were forced.
+The CI policy rejects high/critical production dependency advisories. The final documentation recheck did not rerun the dependency audit; no current vulnerability count is asserted.
 
 ## Branding and mobile navigation
 

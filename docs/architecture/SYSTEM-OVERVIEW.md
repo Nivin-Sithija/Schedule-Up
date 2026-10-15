@@ -1,36 +1,30 @@
-# ScheduleUp system overview
+# System overview
 
-![ScheduleUp high-level architecture](scheduleup-architecture.png)
+![ScheduleUp deployed system](scheduleup-architecture.png)
 
-[Editable SVG](scheduleup-architecture.svg)
+[Editable SVG](scheduleup-architecture.svg) · [Mermaid source](system.mmd) · [Detailed architecture](ARCHITECTURE.md)
 
-## What each component contributes
+## Deployment boundary
 
-| Component | Its job in ScheduleUp |
+The live product is https://scheduleup.tech. Render hosts three Singapore Starter services, each configured for one instance. The API serves the built React dashboard and embeds both the Temporal activity worker and GramJS Telegram adapter. These are logical components inside one app service, not separately deployed workers.
+
+| Component | Responsibility |
 |---|---|
-| React | The owner's inbox, task calendar, templates, scheduled follow-ups, client management and connection setup. |
-| Fastify + TypeScript | Authenticates account sessions, isolates workspaces, validates incoming events and serves the dashboard API. It handles owner-approved send requests and protects account credentials. |
-| WAHA | A server adapter for the owner's QR-linked WhatsApp account. Supplies message events and sends approved replies. |
-| GramJS | The embedded personal Telegram adapter. QR login creates an encrypted account-specific session; private allowed conversations join the shared inbox. |
-| Temporal | Records incoming signals durably, serializes per-client batches, retries failed analysis activities, and maintains reminder/follow-up timers across worker restarts. Its local SQLite development server has its own history disk. |
-| Mastra | Runs the actual Gemma agent calls for extraction, repair and editable drafts. Today bounded context/retrieval, validation and task commits are application code around those calls, not Mastra memory/tools or a Mastra workflow. |
-| Gemma | Interprets both speakers: request versus commitment, who owes what, agreed dates, changes and completion. It produces proposed structured changes or editable text. It has no send authority. |
-| Ollama / OpenRouter | Alternative inference routes for Gemma. Ollama is the working local endpoint; OpenRouter is the hosted route, using a prioritized Google AI Studio provider key. Hosted commitment extraction and editable drafting have passed; real message-to-calendar acceptance testing is pending. |
-| Tiger Data | PostgreSQL is the authoritative store for account state, messages, tasks, approvals and encrypted Telegram sessions. pgvector plus full-text search retrieves relevant prior agreements with account/client isolation. |
-| Render | Hosts the live dashboard/API/embedded worker and private WAHA/Temporal services on three Starter instances. The custom domain is https://scheduleup.tech. |
-| Docker Compose | Starts the local WAHA and Temporal services. In the current local setup, the API and Ollama run on the host. |
+| React dashboard | Conversations, task calendar, review requests, templates, scheduled follow-ups and connection settings |
+| Fastify API | Account authentication, workspace isolation, validation, intake and owner-approved actions |
+| WAHA private service | QR-linked personal WhatsApp sessions, signed webhooks and reviewed sends |
+| GramJS inside API | Personal Telegram QR login, allowed private conversations, text ingestion and sends |
+| Temporal private service | Durable per-client signals, analysis activities, reminders and approved-send timers |
+| Mastra inside app | Gemma extraction, repair and editable draft generation |
+| OpenRouter / Gemma | External hosted inference; primary 26B model and configured 31B fallback |
+| Tiger Data | External PostgreSQL authoritative state, encrypted Telegram sessions and hybrid retrieval index |
 
-## How an incoming message becomes a task
+WAHA has a 1 GB session disk. Temporal has a 1 GB SQLite history disk and uses its development server. Tiger and OpenRouter are outside Render's app/private-service boundary. The embedding model runs inside the app; Gemma does not.
 
-1. WAHA or GramJS receives an owner/client message. The API checks session identity and whether the conversation is allowed.
-2. New conversation activity pauses approved follow-ups before AI analysis, so an old approval cannot send against a changed conversation.
-3. A durable Temporal signal queues an ordered batch for that client. The activity worker receives the message objects directly.
-4. Current tasks, bounded recent messages and relevant Tiger search results supply context. Message persistence runs alongside analysis; the batch is not written and reread merely to create the prompt.
-5. Mastra calls Gemma. Application code checks schema, evidence, calendar/timezone, actor responsibility and task revisions. Clear commitments become tasks; uncertain changes become review requests.
-6. Validated state is saved in Tiger. The dashboard refreshes to show tasks, calendar dates, reviews and reminders.
+## Main flows
 
-## Outgoing messages
+Incoming allowed text → identity checks → pause existing follow-up approvals → durable Temporal signal → ordered batch → message persistence and context-aware inference → schema/evidence/calendar/revision validation → Tiger state → dashboard.
 
-An immediate reply uses the owner's reviewed text and selected conversation. A scheduled follow-up also requires an exact approved time, unchanged task revision and unchanged conversation sequence. Temporal supplies the timer; deterministic application checks decide whether sending is still permitted. New activity pauses the follow-up. Unknown provider delivery is not automatically retried.
+Reviewed outgoing text → account/client checks → outbox → channel adapter. Scheduled sends additionally require the approved time, unchanged task revision and conversation sequence, and acceptable lateness. AI has no send authority.
 
-The PNG and SVG depict a high-level grouping. GramJS and the activity worker are embedded in the API process; the cards are logical responsibilities, not a claim that each is a separate microservice. Solid arrows show implemented paths. The boundary groups the hosted app and private connectors; Tiger and hosted model inference remain external. Sentry is excluded from the active plan.
+The configured fallback model failed the latest availability checks. See [validation](../testing/VALIDATION.md); the diagram shows configured components, not an assertion that every external endpoint is healthy.

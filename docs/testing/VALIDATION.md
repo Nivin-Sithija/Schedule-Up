@@ -1,197 +1,36 @@
-# Local validation — 13 October 2026
+# Final product recheck — 15 October 2026
 
-## Verified
+This report separates direct observations from checks not performed. The audit did not send real messages, modify account data, provision services or change production configuration.
 
-- Production frontend build and TypeScript checks pass.
-- 31 automated tests cover speaker identity, client isolation, evidence, context fitting, calendar resolution, responsibility rules and scheduled-send eligibility.
-- Temporal's workflow bundler compiled the conversation, reminder and send workflows successfully.
-- Local API health endpoint returned 200.
-- Dashboard and Clients layout inspected in Chrome.
-- End-to-end simulator: owner message “I will send the draft on Friday.” produced an Open owner task dated **2026-10-16**, linked to its source message.
+| Check | Result | Evidence |
+|---|---|---|
+| Public HTTPS root | PASS | `https://scheduleup.tech/` returned 200 HTML with certificate verification |
+| Frontend assets | PASS | Deployed JS `index-B9ksf2q8.js` and CSS `index-CdGhmzaX.css` returned 200 |
+| API liveness | PASS | `/api/health` returned 200 with `{"ok":true}` |
+| Signed-out session | PASS | `/api/auth/me` returned 200 with `user:null` |
+| Protected state | PASS | `/api/state` returned 401 without a session |
+| Response protections | PASS | CSP, HSTS, frame denial and MIME protection headers present |
+| Render inventory | PASS | Exactly three services, one instance each; all unsuspended with live deployments |
+| App revision | PASS | Live revision matched repository `9b14beb3004301f296f2222e1902fbc11eeb7568` before documentation edits |
+| Recent app logs | PASS, sampled | Latest 100 entries included 50 completed HTTP 200 responses, no error-level entries and one app hostname |
+| Tiger database | PASS, read-only | Production connection with trusted TLS returned `SELECT 1`; application tables present |
+| Primary Gemma endpoint | PASS | 26B model returned `READY` in 2.636 seconds |
+| Application extraction | PASS | Actual Mastra/extraction/guard code returned an owner task for “send the revised proposal tomorrow”, dated 2026-10-16; 7.265 seconds; synthetic input was not persisted |
+| Fallback Gemma endpoint | DEGRADED | 31B model returned HTTP 504 initially, then HTTP 502 on both retries |
+| Automated regressions | PASS | 93/93 tests; permitted rerun allowed the account-test HTTP server to bind |
+| Production build/typecheck | PASS | Vite build and `tsc --noEmit` completed |
+| Local duplicates | None found for this product | No local API or inference listener; Docker daemon socket absent; the port-5173 Vite process belongs to another repository |
 
-## Live Ollama smoke evaluation
+## Active issue
 
-Provider: local Ollama. Model: `gemma4:12b`. Timezone: Asia/Colombo. Four synthetic scenarios; each test uses a message timestamp of 13 October 2026.
+The configured `google/gemma-4-31b-it:free` fallback is unreliable in this sample. The primary `google/gemma-4-26b-a4b-it:free` endpoint and structured extraction passed. This does not establish future availability, quota headroom or general extraction accuracy. No fallback replacement or production configuration change was made during the audit.
 
-| Scenario | Expected | Observed | Warm latency |
-|---|---|---|---|
-| Owner promises a proposal Friday | Open owner task; 16 October | Pass | 3.140 s |
-| Client tentatively suggests next week | Owner review | Pass | 4.089 s |
-| Owner requests the logo | Waiting on client | Pass | 2.817 s |
-| Client says thank you | No new task | Pass | 0.401 s |
+## Private-service and workflow limits
 
-These measure the complete extraction function, including deterministic guards. They do not establish raw model accuracy or the planned 40-case evaluation. An earlier cold request took about 90 seconds. Warm-cache effects and changed prompts/settings mean the comparison is not a controlled benchmark.
+Render reports WAHA and Temporal live. Their recent log samples contained no error-level entries; Temporal had no entries within the sampled last-hour window. Historical startup logs include polling warnings and a persistent-store error at 04:10 UTC on 15 October; they do not establish a current failure or prove recovery. App worker state-change logs are present.
 
-Earlier evaluation exposed incorrect JSON structure, weekday arithmetic and request responsibility. Schema-constrained output, deterministic message-local calendars and narrow responsibility guards corrected these smoke scenarios. Ambiguous or truncated context continues to require owner review.
+Private WAHA pairing/status, Telegram live state, Temporal namespace/task-queue health, hosted restart recovery and real message delivery were not directly verified in this audit. Existing SSH access could not be used because a trusted Render host key was not available locally. Service liveness and past owner reports are not substitutes for these checks.
 
-## Not yet verified
+The extraction probe used the deployed inference credentials and repository AI code, outside the hosted HTTP workflow. It validates generation and deterministic guards, not the complete channel → Temporal → storage → calendar lifecycle. The database probe checked connectivity rather than persistence writes or hybrid-search quality.
 
-- Temporal server restart recovery: Docker CLI is installed, but its daemon was not running during validation. Workflow bundling passed; no live Temporal server test was completed.
-- Real WAHA pairing, linked-ID mapping, provider delivery and reconnection.
-- Atlas and Tiger integrations against configured databases.
-- OpenRouter hosted calls, quota behavior and 14-day deployment.
-- Live Sentry export and cross-service trace propagation.
-- Backboard/R-CLI development evidence and a real-user trial.
-
-No real WhatsApp messages were sent. No Render services were provisioned and no Render/Tiger credits were consumed by deployment.
-
-## UI refresh — 14 October 2026
-
-- Rebuilt the navigation, overview, task cards, templates, and conversation layout using white/black with beige and pale blue accents. Custom SVG icons are rendered in code; no generated images or fabricated charts are used.
-- Conversation layout includes client search, active-task filtering, source-message highlights, reply drafts/templates, a composer, and a separate commitment panel.
-- Browser prompts were replaced with modal forms for task creation, deadlines, templates, and exact-message follow-up approval. Forms keep server-side revision/approval checks intact.
-- Added a client identity check before inserting a pending AI draft, and preserved newly edited composer text when a previous send finishes.
-- `npm run build` passed (Vite production build and TypeScript).
-- `npm test` passed all 31 existing tests. These verify model-context and workflow rules; they are not browser interaction tests.
-- Visually inspected the overview in Chrome and the conversation layout and deadline modal in Safari. Confirmed the revised professional Dashboard labels in Safari. Mobile breakpoint styles are implemented but have not been visually verified.
-- No live WhatsApp messages were sent, and no deployment was performed.
-
-- Removed promotional headings, slogans, and decorative captions at the user’s request. Screens now use factual Dashboard, Tasks, Conversations, Needs review, and Reply templates headings. Replaced the motivational card with workspace counts.
-
-## Tiger-only local integration setup — 14 October 2026
-
-The user changed the database plan to Tiger-only. MongoDB dependencies and deployment/configuration entries were removed; Tiger now holds the authoritative workspace in `ft_workspace` and the hybrid-search index in `ft_chunks`. The private local config uses the existing Tiger service and isolated `followthrough_whatsapp_test` schema. Certificate-chain and hostname verification remain enabled through a local certificate bundle. No additional Tiger cloud service was provisioned.
-
-Live integration checks passed for local Gemma inference, Tiger workspace reads/revision writes, local embeddings with pgvector/full-text retrieval, Temporal namespace connectivity, and WAHA authenticated API access. The Temporal worker reached RUNNING. Corrected local Temporal volume ownership after the first startup failed. QR JSON handling and session creation were fixed, and paired-owner identity is checked before message processing or sends. Build and all 31 existing tests passed after the changes.
-
-The user corrected the owner/client roles. Updated the private configuration and the empty test workspace (zero messages, tasks and schedules), restarted the app, and verified the corrected client in the running API. The QR endpoint returned an image. Phone numbers and credentials remain in the ignored private `.env`, not this document.
-
-WhatsApp was still awaiting QR scanning at the last check. No actual WhatsApp messages were sent. Real two-way message ingestion, extraction through the live Temporal pipeline, delivery, and restart recovery still need a paired-phone trial; the component checks do not prove those outcomes. Atlas and the MongoDB Atlas prize track are no longer part of the chosen architecture.
-
-## QR pairing expiry fix — 14 October 2026
-
-WAHA reported `FAILED` with `QR refs attempts ended` after the unscanned pairing session expired. The old QR endpoint requested an image without recovering that session, producing HTTP 422. Added session-state-aware recovery: restart FAILED, start STOPPED/missing sessions, wait for SCAN_QR_CODE, and verify the configured owner when already WORKING. Concurrent QR requests share one recovery operation. The Settings panel refreshes the QR every 20 seconds while open, clears stale images on failure, and displays pairing errors locally. Connected accounts are never restarted just to obtain another QR.
-
-Production build passed and all 35 tests passed, including expired-session recovery, connected-owner protection and concurrent QR retries.
-
-## Notifications and live-message routing — 14 October 2026
-
-Added dismissible, accessible success/error/info toasts above modal dialogs, with automatic dismissal and duplicate suppression. Actions report completion, failures report errors, new internal reminders appear as popups, and verified WhatsApp state is checked every five seconds. Connection verification confirmed WORKING with the configured owner and the reminder workflow RUNNING.
-
-Live WAHA logs showed message.any webhooks returning 200 but the workspace still contained zero messages. A linked-ID lookup returned 400 because NOWEB contact storage was disabled. Installed WAHA source also showed owner-phone NOWEB events can contain the peer in `from` with `to` absent. Added parsing of that shape and matching signed provider `remoteJidAlt` metadata to the allowlist, with peer/actor consistency checks and group exclusions. No session logout, re-pairing, store-setting change or historical import was performed.
-
-Production build and 39 tests pass, including both directions of NOWEB messages, linked-ID alternate metadata, mismatched peer rejection and unknown/group exclusions. Actual post-fix phone-message capture remains to be checked by sending a fresh message; earlier ignored messages were not retained for replay.
-
-## Successful NOWEB sends misreported as uncertain — 14 October 2026
-
-The live connector logged successful HTTP 201 sends in about 10–1127 ms, so the reported uncertainty was not caused by the 20-second request timeout. Installed WAHA NOWEB code returns the raw Baileys message with `key.id`; the app previously expected a top-level `id`. Later owner-message echoes had already confirmed the three affected outbox records, but their old error strings remained.
-
-Added normalization for raw NOWEB keys, serialized ID objects and string IDs. Raw keys now produce the same identifier used by WAHA message.any and ACK events. Confirmation clears old errors, a late exception cannot overwrite a confirmed send with uncertainty, and ambiguous text-only echo matches do not confirm multiple requests. The UI blocks identical replies while unconfirmed and reports late confirmation as success. Cleared only stale errors on already-confirmed sends; no sends were repeated.
-
-Build and 43 tests passed, including raw response normalization and confirmation/timeout races. No extra live WhatsApp message was sent to validate this fix; the next owner-approved dashboard send will exercise the updated live path.
-
-## Completed tasks and fresh context — 14 October 2026
-
-The dashboard and conversation context panel show only open/review/waiting tasks. Completed and cancelled records remain in Tasks history. Completed-task counts/cards and their reminders are removed from the front-page UI.
-
-The model's recent-history window starts after the latest completed/cancelled task update for that client. Evidence for other active tasks and fresh webhook batches is preserved. Hybrid retrieval obeys the same boundary, so it cannot silently reintroduce old closed-task evidence as recent context. Conversation messages and task history remain stored. Proposal-based completion also updates the closure timestamp.
-
-Build and 45 tests passed, including closure boundaries, history preservation, parallel active-task evidence and new batches. No real tasks were modified for validation.
-
-## Four-day calendar and chat completion — 14 October 2026
-
-Tasks now includes a calendar above the list covering today plus three days in the configured workspace timezone. Active task deadlines populate the date columns; timed deadlines convert to the workspace-local day and date-only deadlines stay date-only. Day selection filters the task list, All dates clears the selection, and calendar entries open supporting chat evidence. Undated and later tasks remain available in the unfiltered list.
-
-Explicit chat completion can now close manually edited tasks as well as extracted tasks, preserving edited title/responsibility/deadline fields. Completion requires fresh evidence and a matching task. Future promises, negation, questions, generic thanks and ambiguous multi-task completions require review. Closing a task updates its revision/time and pauses approved follow-ups. Build and all 51 tests passed, including local date grouping and completion evidence rules.
-
-## Categorized templates — 14 October 2026
-
-Templates retains existing replies and adds Business card, Services, Opening hours and Contact details categories. Missing categories on previously saved templates fall back to replies. Category tabs filter saved items; creation and editing persist the category through validated POST/PATCH endpoints. Blank business-information starters contain no invented business details. All categories appear in the conversation template picker and insert text into the composer for review. Business cards are text templates, not media or vCard attachments. Changing a category preserves custom draft text.
-
-Build and all 51 existing tests passed. Category validation checked legacy defaults, all five categories and invalid-category rejection. The restarted local server passed authentication, saved-template retrieval and invalid-category rejection checks without changing user records or sending messages. New category creation/editing has not been exercised against the live database in this validation.
-
-## VS Code service startup — 14 October 2026
-
-Added a Run and Debug configuration, sequential pre-launch tasks and a local dependency startup script. Startup was exercised with Docker Desktop initially stopped: it opened Docker Desktop, started existing WAHA and Temporal containers with their named volumes, verified authenticated connector readiness, verified Temporal connectivity and reused Ollama with the configured Gemma model. A separate startup smoke check confirmed API health and the embedded Temporal worker reached RUNNING, then requested graceful termination. JSON parsing and the full build/typecheck passed. VS Code's debugger/browser-opening behavior has not been exercised inside the editor.
-
-## Individual accounts and Allowed clients — 15 October 2026
-
-Replaced the shared owner-password flow with per-user registration, login, password change and revocable opaque sessions. Passwords use salted asynchronous scrypt (N=131072,r=8,p=1); only session-token hashes are stored. Cookie flags, absolute/idle expiry, persistent rate limits and write-origin/header checks are enforced. Workspace context is required and restored for HTTP handlers, local batches and V2 Temporal activities. Account-specific WAHA sessions and workspace-filtered hybrid retrieval replace the singleton paths for new accounts. Legacy workspace, search table, session and workflow histories remain separate and unclaimed.
-
-Added Settings owner-number setup and a separate Allowed clients page with add/remove, duplicate/self-number validation and client numbers displayed on dashboard/conversation views. Removal preserves history, disables ingestion/sending and pauses approved follow-ups. Re-adding a number reuses its historical client ID.
-
-Build/typecheck and all 54 tests passed. New integration tests exercised two accounts, cross-account task/client denial, weak-password rejection, cookies, restart persistence, forged sessions, untrusted origins, password rotation, logout, registration limits, add/remove/re-add and duplicate numbers. Live Tiger probes verified workspace and retrieval isolation even with identical message/client IDs, then cleaned their temporary records. The real API started with Tiger and the V2 Temporal worker reached RUNNING; unauthenticated state access returned 401. Two stopped, unpaired WAHA sessions were created/listed/deleted successfully without touching default or sending messages. This uncovered and fixed stopped-session listing (`all=true`) and empty successful connector responses. Safari visually checked registration and the separate Allowed clients page in read-only demo mode; no real account was created or phone re-paired for this validation.
-
-Email verification, forgotten-password recovery, MFA, and a complete newly paired multi-account WhatsApp message journey remain unimplemented/unverified as applicable. The pilot account repository is CAS JSONB; normalized indexed account/session tables are needed at larger scale.
-
-## Telegram channel and mixed task timeline — 15 October 2026
-
-Added an embedded personal-account Telegram adapter using GramJS MTProto, QR login, optional in-memory two-step verification and encrypted workspace-bound StringSession persistence. Private human conversations are explicitly allowed from the connected inbox. Provider-scoped normalization captures owner/client text and prevents same-ID collisions with WhatsApp. Stored client channel selects the outgoing transport; task provenance comes from that stored channel. WhatsApp setup changes preserve Telegram allowlists and the independent Telegram owner number.
-
-Conversations and Tasks have All channels / WhatsApp / Telegram filters. Channel icons/badges appear on conversation headers/list entries, task cards, dashboard client/task rows and calendar entries. Both channels share the existing calendar and task lifecycle; identities remain separate conversations. The read-only demo now includes both providers. README, architecture, task scope, submission notes, environment example, Render scaffold and local startup guidance were updated.
-
-Final build/typecheck and all 58 tests passed. Added tests cover Telegram actor/provider normalization, unknown/removed/nonprivate traffic rejection, authenticated encryption/tampering/wrong-account rejection and preserving mixed-channel settings. Safari verified Telegram-only conversation filtering, its message, task badge and the mixed-channel demo.
-
-`npm run test:workflow` passed with real local Gemma, Temporal and Tiger. It used a disposable workspace and synthetic provider events with the configured test identities, queued durable signals, restarted a worker, verified dated tasks from both channels in the same four-day calendar, paused an approved Telegram follow-up, generated an editable draft, persisted reminders, recognised explicit Telegram completion, preserved the other channel's active work and checked fresh completed-task context. Workflows and temporary workspace/search records were cleaned up. No real message was sent by that check.
-
-Live provider validation is still pending: TELEGRAM_API_ID/TELEGRAM_API_HASH are not configured, and the account repository currently has no registered user. The existing legacy WhatsApp default session remains separate. The owner must register, save their numbers, link account-specific WhatsApp/Telegram sessions and allow the client before real message tests. Actual Telegram QR/2FA, receive/send, reconnect and provider delivery have not been proven against a live Telegram account. SMS remains unimplemented. Telegram requires the embedded API worker; multi-instance connection ownership and full historical sync remain future work.
-
-## Registration form recovery — 15 October 2026
-
-The reported browser state showed “Failed to fetch” with no matching registration request in the server log; the API was reachable when checked. Hardened the form to read named submitted fields (including browser autofill), show explicit name/email/password/confirmation validation beside the submit button, translate network failures into an actionable message and stop background workspace polling while signed out. This avoids background requests obscuring registration feedback. The exact cause of the earlier transient fetch failure was not established.
-
-A disposable account successfully registered against the running Tiger-backed API, received a session cookie and opened its authenticated workspace; only its account/session/workspace/test workflow were then removed. The real user subsequently confirmed registration worked, and Chrome showed their signed-in Settings screen. Build/typecheck passed; added form tests cover autofilled submitted values and short/mismatched password feedback.
-
-## Conversational commitments — 15 October 2026
-
-Live test messages were present in both account-specific WhatsApp and Telegram conversations, including dashboard owner replies. The WhatsApp acceptance was analyzed as another copy of the original client request; duplicate review cards accumulated. Telegram's counteroffer repeatedly failed with an unknown-task reference because pending requests were not existing tasks. These were application extraction/context issues, not evidence that Gemma was disconnected.
-
-Added explicit conversational-acceptance and counteroffer instructions, compact request-local ID aliases restored before evidence validation, pending-request context, guarded conversion of updates to uncreated requests, validation-aware repair, fresh-evidence enforcement and review-card reconciliation. Deadline resolution retains "by 10 AM" in Asia/Colombo and recognizes the proposed 17th before an unrelated reason mentioning tomorrow. No sending permission is granted by task extraction.
-
-Build/typecheck and all 68 automated tests pass. `npm run test:commitments` passed three real local Gemma scenarios: typo-filled owner acceptance automatically opens the task; a proposed 17th remains review; subsequent client agreement opens the task on the 17th. These synthetic regression checks do not send messages or write workspace state.
-
-Reprocessed the two existing live test replies through `processBatch` with the API stopped, then restarted the API/embedded worker. Tiger now contains one open WhatsApp task due 16 October at 10:00 Asia/Colombo, no WhatsApp review cards, and one Telegram review request dated 17 October awaiting client agreement. Both clients' analysis is ready. No message was sent during repair. The restarted API serves the page/assets and authenticated connection/state routes successfully. Complete live follow-up, completion and offline provider-recovery testing remains outstanding.
-
-Chrome subsequently displayed the corrected live Dashboard: Your tasks 1, Needs review 1, and the WhatsApp task "Send revised proposal" due 16 Oct, 10:00. The DevTools console showed no messages during this inspection.
-
-## Broader calendar conversation scenarios — 15 October 2026
-
-`npm run test:calendar` now runs 15 realistic scenarios through local Gemma/Mastra extraction, the production task service, Tiger persistence and the dashboard's four-day calendar function. The fixtures alternate WhatsApp/Telegram provenance and use an isolated disposable workspace. Existing-task scenarios seed previously accepted tasks. Synthetic messages never reach a provider, and the test does not exercise Temporal recovery or the live UI.
-
-The first run exposed wrong timezone offsets for 24-hour and explicit-date times, replacement dates being overwritten by an old deadline in the explanation, two deliverables sharing a date, another task's "pending" sentence preventing completion, and explicit client promises being routed to review. Fixed task-specific clause selection, deterministic named-month/ordinal/relative date and AM/PM/24-hour resolution, clause-specific completion checks, counteroffer guards for existing-task updates, and explicit-client-promise instructions. The conditional-language expectation permits either ignoring an uncommitted idea or offering review, while requiring no accepted task/calendar entry.
-
-Final result: **15/15 scenarios passed**. Coverage includes informal acceptance; promises with explanations; undated commitments; moving an existing deadline; proposed and agreed changes; two tasks with distinct dates; completing one task while another is pending; cancellation; waiting on client inputs; refusal; conditional wording; short corrections; midnight timezone boundaries; and processing the same event twice. Full build/typecheck and **73 automated tests passed**. Example messages, expected outcomes, observed task/calendar state and individual latency are recorded in `CALENDAR-SCENARIOS.md`. Both temporary test workspaces and their retrieval rows were removed. These are regression examples, not a measured general model-accuracy guarantee.
-
-## Hosting preparation — 15 October 2026
-
-Created and pushed the private GitHub repository. Added inline trusted Tiger CA support with certificate validation and rejectUnauthorized=true, private secret-file preparation preserving the existing Telegram encryption key, CPU-only ONNX installation, and embedding prewarm during image build. No secrets or local account/session data were committed. Build/typecheck and all 80 tests pass.
-
-OpenRouter's configured key authenticated successfully and reported the free tier with 50 daily requests remaining. Its later spending cap was $1 with $1 remaining. Tiny requests to both configured free Gemma endpoints failed with HTTP 429, limit_source=upstream_provider_shared_pool. This is distinct from a key spending cap or exhausted daily quota; hosted extraction is NOT verified and no paid endpoint was selected. Added status-aware provider-error classification so a generic upstream error can still display the actual rate-limit category.
-
-The AMD64 Temporal image built. A fresh Docker volume was initially unwritable by the temporal user. Added startup ownership initialization followed by privilege drop; an isolated container started its server, and its non-root user had a nonempty writable SQLite database. The test container and volume were removed. Main-image local AMD64 builds stalled during dependency installation under emulation; a manual native AMD64 GitHub container check was added. Its result must be recorded separately. No paid Render resources have been created.
-
-## Native Linux and Render account preflight — 15 October 2026
-
-GitHub Actions run 38674034084 completed successfully at commit 8efabc9: native Linux AMD64 application image build, all 80 tests inside that image, and MiniLM embedding verification with container networking disabled. This replaces the earlier pending native-build result. The public WAHA NOWEB 2026.9.2 OCI manifest includes Linux AMD64; the Render blueprint now pins the verified digest.
-
-The configured Render API key authenticated successfully to My Workspace. No existing services were present. Render's validation-only endpoint rejected the three-service blueprint with need_payment_info for each service and the workspace; no resource was created. Billing setup/payment-method entry must be completed by the owner in Render. The API does not establish whether the claimed promotional credit was redeemed or its expiry. The reviewed compute plan is Standard app ($25/month), Starter WAHA ($7/month), Starter Temporal ($7/month), plus two 1 GB persistent disks. Approximate two-week compute is $18, excluding storage/build/traffic/workspace fees. Hosted Gemma remains blocked by the free providers' shared-pool 429 responses.
-
-## Render demo deployment — 15 October 2026
-
-The owner completed billing setup, enabled private GitHub repository access, and approved three Starter services after budget review. Selected recurring base cost: $21/month compute plus $0.50/month for two 1 GB disks, excluding usage/workspace extras. No peak-load test was requested. All resources are in Singapore with one instance and auto-deploys disabled. Existing Tiger storage and the original Telegram session encryption key are reused; no database copy or local WAHA session migration was claimed.
-
-Created app `srv-db84sme89jmc73c7n670` (`https://followthrough.onrender.com`), private WAHA `srv-db84oh0m7kps73d2cltg`, and private Temporal `srv-db84of3ncjis73ekj0t0`. The local API/embedded worker PID 33578 was stopped with SIGTERM before app creation; the workspace had no approved/sending schedules. Local volumes and channel data were preserved.
-
-Initial Temporal startup listened on 7233 while Render assigned 10000. Updated its entrypoint to honor PORT with a 7233 local fallback, pushed commit 272cc3f, canceled the obsolete rollout, and verified the corrected deployment became live. App startup initially overlapped dependency rollout and failed; a fresh deployment was requested after Temporal became live. The app's final public health, login and two-channel workflow checks remain pending. The WhatsApp global webhook was configured to the app's HTTPS endpoint and its service was redeployed. Hosted WAHA requires account-specific QR pairing on the new disk.
-
-Added `scheduleup.tech` and `www.scheduleup.tech` to Render. Domain verification remains pending DNS changes by the owner: apex A 216.24.57.1 and www CNAME followthrough.onrender.com. Do not claim HTTPS verification before it succeeds. OpenRouter Gemma still returned 429 in the latest small provider check; hosted inference remains unverified. Sentry export remains disabled without a DSN.
-
-The next rollout exposed a gRPC connection timeout rather than an established memory failure. Render detected Temporal's randomly assigned HTTP API port as primary and restarted routing. Revised startup fixes gRPC at private port 7233 and HTTP at assigned PORT; API environment uses :7233. The Blueprint now references TEMPORAL_HOST and configuration appends :7233, preserving the existing TEMPORAL_ADDRESS option for local development. Typecheck passed after the configuration change. This supersedes the interim gRPC-on-10000 fix above.
-
-The corrected Temporal rollout `dep-db8511qj9qps73bm9km0` and app rollout `dep-db8520qvcj2c73888qk0` became live. Public checks passed: `/api/health` 200 with `{"ok":true}`, `/` 200, `/favicon.svg` 200 SVG, `/api/auth/me` 200 with signed-out user, `/api/state` 401 without a session. WAHA's webhook-configured rollout `dep-db84uo2vcj2c7387s1r0` is live. No paid plan upgrade or peak-load test was performed. The owner was asked to sign in, pair the hosted WhatsApp session, confirm Telegram connection, and save the two DNS records. No real client send was performed during deployment. Both configured free hosted Gemma models still returned 429 on the latest bounded availability check.
-
-The owner confirmed successful hosted login and both WhatsApp and Telegram connections. After correcting an accidental scheduleup.scheduleup.tech record, Render marked scheduleup.tech and www.scheduleup.tech verified. Google Public DNS returned apex A 216.24.57.1 and www CNAME followthrough.onrender.com. Local DNS retained negative-cache results; direct HTTPS checks with the correct SNI and certificate verification enabled still failed during initial certificate activation. Custom-domain HTTPS acceptance remains pending; DNS verification alone is not recorded as HTTPS success.
-
-Custom-domain HTTPS subsequently passed with normal certificate verification enabled and DNS explicitly resolved to Render's load balancer: https://scheduleup.tech/api/health returned 200 with {"ok":true}; https://www.scheduleup.tech/ returned 301 to https://scheduleup.tech/. Ordinary laptop DNS remained negatively cached. OpenRouter diagnostics confirmed the Google AI Studio shared upstream pool rate limit, while the configured key retained 50/50 daily free requests and its full $1 spending limit. The provider recommends BYOK; the owner was asked to add a free-tier Google AI Studio key in OpenRouter integrations. No paid model or Google billing was enabled by the agent.
-
-Hosted Gemma commitment checks passed after prioritized Google AI Studio BYOK: acceptance with typos (4,746 ms), proposed later date (14,593 ms), and client agreement (4,690 ms). Editable drafting passed in 2,473 ms without dispatch. A read-only Tiger check returned 2 clients, 10 messages, 8 analyzed messages and 2 tasks; earlier laptop connection timeouts were intermittent. The owner subsequently confirmed sign-in works and requested a richer synthetic demo. Sentry was removed from the active plan/target tracks, deployment prompts and architecture graphic at the owner's request; legacy disabled instrumentation is not a submission claim.
-
-Expanded /api/demo to a pure generated fixture: 6 clients, 22 messages, 8 tasks, 1 review, 3 follow-up statuses and 7 categorized templates. Four calendar days are populated relative to the current local day, including a post-midnight Asia/Colombo check. Evidence links are client-scoped, completed/cancelled tasks stay outside active calendar entries, review-only work is not committed, and the approved sample follow-up passes eligibility at its scheduled time. No account/database reads, writes, model calls or provider sends occur in the demo endpoint. Added a walkthrough in docs/guides/DEMO.md.
-
-The reported HTML sign-in response coincided with an app restart; its exact cause was not established, and login later succeeded. API response handling now presents useful errors for non-JSON gateway/unexpected responses instead of exposing a JSON SyntaxError. Build/typecheck and three focused response-handling tests passed. The initial full test run hit sandbox EPERM while binding the account-test HTTP server; the permitted rerun result is recorded separately.
-
-The permitted full regression rerun passed all 83 tests. The architecture PNG/SVG was regenerated and visually inspected after removing the Sentry target and updating the live deployment/model status.
-
-Demo rollout dep-db86074s728c738agmeg became live at commit 85c1a30. The app was briefly suspended and resumed to avoid overlapping embedded messaging workers; the pre-rollout workspace check found no in-flight sends. Both the Render URL and certificate-verified scheduleup.tech /api/demo returned HTTP 200 with the expected 6 clients, 22 messages, 8 tasks, 1 review, 3 schedules and 7 templates. The endpoint reports provider=simulated. Live workspace data was not seeded or replaced.
-
-Repository organization and sign-out shortcut: moved root project documents into docs/architecture, docs/deployment, docs/guides, docs/planning, docs/submission and docs/testing. Added a documentation index and root layout guide, preserved tool-discovery config at the root, updated Markdown links and report/diagram output paths, and ignored Python cache artifacts. Added a dedicated Sign out button in the bottom-left workspace controls, reusing the same session-revocation handler as Settings. Production build/typecheck, Markdown link validation, diagram generation, whitespace checks and the existing account/session-revocation integration test passed.
+Use the [acceptance scenarios](CALENDAR-SCENARIOS.md) to record those remaining outcomes with an authenticated account and owner-approved messages. Documentation and diagram changes after this report have been checked locally; they have not been deployed by this task.

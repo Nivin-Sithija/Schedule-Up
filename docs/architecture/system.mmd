@@ -1,0 +1,25 @@
+flowchart LR
+  Owner[Business owner browser] <--> UI[React dashboard]
+  People[Owner and allowed clients] <--> WA[WhatsApp]
+  People <--> TG[Telegram]
+  subgraph Render[Render Singapore: three single-instance services]
+    subgraph App[Schedule-Up app service]
+      UI <--> API[Fastify API and account isolation]
+      API <--> Gram[GramJS Telegram adapter]
+      Worker[Embedded activity worker and Mastra]
+      Rules[Evidence, calendar, revision and send checks]
+      Worker --> Rules
+    end
+    WAHA[Private WAHA: session disk]
+    Temporal[Private Temporal: SQLite history disk]
+    WAHA <--> API
+    API <--> Temporal
+    Temporal <--> Worker
+  end
+  WA <--> WAHA
+  TG <--> Gram
+  Worker <--> Gemma[OpenRouter Gemma: primary and configured fallback]
+  API <--> Tiger[Tiger PostgreSQL and hybrid retrieval]
+  Worker <--> Tiger
+  Rules --> Tiger
+  Rules --> API

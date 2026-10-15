@@ -1,0 +1,29 @@
+flowchart LR
+  Owner[Business owner]
+  Client[Client in messaging app]
+  Channels[WhatsApp and Telegram]
+  AI[Hosted Gemma]
+  Workflow[Temporal]
+  subgraph Product[ScheduleUp]
+    Account([Register and sign in])
+    Connect([Connect accounts and allow clients])
+    Inbox([View conversations and evidence])
+    Tasks([Manage tasks and calendar])
+    Review([Review proposed changes])
+    Draft([Edit drafts and templates])
+    Send([Send reviewed reply])
+    Schedule([Approve or cancel follow-up])
+    Reminders([Read internal reminders])
+    Ingest([Ingest allowed text and pause old approvals])
+    Analyze([Extract and validate commitments])
+    Gate([Check approval and current eligibility])
+  end
+  Owner --- Account & Connect & Inbox & Tasks & Review & Draft & Send & Schedule & Reminders
+  Client --- Channels
+  Channels --- Ingest
+  Channels --- Send
+  Ingest --> Analyze
+  AI --- Analyze & Draft
+  Workflow --- Analyze & Schedule & Reminders
+  Send --> Gate
+  Schedule --> Gate

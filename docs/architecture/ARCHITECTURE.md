@@ -1,71 +1,37 @@
-# Architecture and context policy
+# Implementation architecture
 
-[High-level architecture diagram and component guide](SYSTEM-OVERVIEW.md) · [PNG](scheduleup-architecture.png) · [SVG](scheduleup-architecture.svg)
+[System diagram](SYSTEM-OVERVIEW.md) · [Use cases](USE-CASES.md)
 
-## Durable intake, direct inference
+## Intake and workflows
 
-```mermaid
-flowchart TD
-  W[Owner + client messages] --> V[Signature, session and allowlist validation]
-  V --> P[Pause approved client followups]
-  P --> T[Durable Temporal signal]
-  T --> B[Per-client ordered batch]
-  B --> A[Tiger PostgreSQL message persistence]
-  B --> C[Bounded snapshot + relevant agreements]
-  C --> G[Gemma through Mastra]
-  G --> R[Schema, calendar, actor and evidence rules]
-  A --> Commit[Revision-checked task commit]
-  R --> Commit
-  Commit --> D[Dashboard + owner reminders]
-```
+WAHA supplies signed account-session webhooks; GramJS supplies personal Telegram updates inside the API. The application verifies the linked owner and allowed client before ingestion. Unknown clients, groups and unsupported event types do not become conversations. Provider message IDs are namespaced and checked for duplicates.
 
-The incoming message objects flow directly to inference; the hot path never writes those objects to Tiger PostgreSQL merely to read them back for the prompt. A workspace snapshot still supplies existing tasks and previous context. New messages are labeled owner/client data, never elevated to system instructions.
+New activity synchronously pauses approved follow-ups before analysis. `signalWithStart` records messages in account/client-scoped Temporal conversation workflows on `followthrough-v2`. Batches wait for five idle seconds, at most fifteen seconds, and analysis chunks contain at most eight messages. Message persistence and analysis run alongside each other; new messages are passed directly to model input rather than written and reread just to construct a prompt.
 
-Pausing outbound approvals is a synchronous database barrier. This is deliberate: a delayed model must not leave an outdated follow-up eligible to send. Temporal acknowledges events durably before webhook success; Tiger PostgreSQL persists the batch alongside generation. Local development substitutes file persistence and an explicitly limited scheduler.
+`conversationWorkflowV2`, `sendWorkflowV2` and `reminderWorkflowV2` carry account IDs. Activity wrappers restore the required workspace context. Workflow IDs are namespaced by account. The API embeds the activity worker; one app instance owns Telegram sessions.
 
-## Context and inference budget
+## Context and AI
 
-- Batch after five idle seconds, at most fifteen seconds; eight messages per analysis chunk.
-- At most twenty active tasks and 24,000 message characters before provider-specific fitting.
-- New message IDs identify the fresh portion; message text appears only once.
-- Provider message and task IDs are replaced with short request-local aliases for inference and restored before evidence validation. Pending review requests supply continuity but are never treated as existing tasks.
-- Existing task evidence and recent turns supply continuity; Tiger returns at most four older agreement references, filtered by client and checked against Tiger PostgreSQL.
-- Local Ollama defaults to a 4,096-token context setting. Input fitting uses a conservative character estimate with reserved output space. This is an estimate, not a tokenizer guarantee; token accounting is recorded when supplied.
-- Remove old context before shortening new text. Dropping active tasks or shortening new messages forces review instead of automatic commitment.
-- Structured JSON schema, low temperature, bounded output and one repair attempt. Local reasoning is disabled where the model supports `reasoning_effort=none`.
-- Resolve common weekday/today/tomorrow dates using the source message's local calendar. Ambiguous “next Friday” requires review. Correct obvious owner/client request responsibility with deterministic rules.
-- Conversational owner acceptance creates an open task automatically, citing the request and acceptance. Questions proposing a new deadline remain under review until agreement. Repeated analysis replaces matching pending review cards; an accepted task removes its superseded requests. Validation failures receive one model repair attempt, including evidence and task-reference errors.
-- Relative-date deadlines preserve explicit AM/PM clock times in the configured timezone. An ordinal date before a reason clause takes precedence over unrelated dates mentioned in that reason.
-- One model generation at a time per process. Per-client workflows serialize task changes. The server-level queue is not a distributed rate limiter.
-- Local mode never calls OpenRouter. Hosted fallback only accepts configured free Gemma IDs. Daily quota accounting and an automatic quota-resume mechanism are still outstanding; failures retain unanalyzed messages for retry.
+Mastra calls Gemma through OpenRouter for extraction, one repair attempt when needed, and editable drafts. Primary: `google/gemma-4-26b-a4b-it:free`. Configured fallback: `google/gemma-4-31b-it:free`. Configuration accepts only free Gemma IDs. Availability and quotas belong to the external providers; failed analysis remains available for retry.
 
-## Safe actions
+Context includes both speakers, at most twenty active tasks and 24,000 message characters before fitting. New message IDs identify fresh evidence without duplicating their text. Request-local message/task aliases reduce identifier copying errors and are restored before validation. Up to four retrieved older agreement references are scoped by account/client and checked against authoritative messages. Completed/cancelled work sets a recent-context boundary while evidence for remaining active tasks is retained.
 
-AI can propose a task or editable reply. It cannot invoke sending. Every outgoing message has an owner-approved recipient/text/time and an outbox record. Scheduled sends require unchanged task revision and conversation sequence. New activity, cancellation, uncertainty or excessive delay prevents automatic sending. Network ambiguity is not automatically retried.
+Hosted fitting has a 28,000-character budget, with bounded output and low temperature. Context shortening that affects tasks or new text forces review. Model generation is serialized per process, with a bounded pending queue. Schema, source evidence, actor responsibility, calendar interpretation and revision checks control commits. Explicit owner acceptance can create an open task; client promises create waiting tasks; uncertain requests or counteroffers remain under review. Model output never determines the sending channel.
 
-The current reconciliation matches an outgoing echo to an uncertain outbox entry only by client, text and a small time window. It is a pilot heuristic, not an exactly-once guarantee. Full provider-history reconciliation remains required before wider use.
+## Storage and isolation
 
-## Recovery and deployment boundaries
+Tiger PostgreSQL stores account authentication, one optimistic compare-and-swap JSONB row per workspace in `ft_workspace`, encrypted Telegram credentials in `ft_channel_sessions`, and account/client-scoped pgvector/full-text chunks in `ft_chunks_v2`. Workspace rows have a 12 MB cap. Normalized entity storage and archival are needed for larger deployments.
 
-Tiger PostgreSQL's optimistic workspace revision protects concurrent API/worker updates. The pilot uses a JSONB workspace row capped at 12 MB, updated with compare-and-swap on a separate revision column. Larger usage needs normalized entity tables and archival. The same Tiger database holds the authoritative workspace and a rebuildable embedding/search index in separate tables.
+Opaque server sessions resolve the account ID. AsyncLocalStorage carries workspace context; missing context fails closed. Clients and provider peers stay separate across channels. No automatic WhatsApp/Telegram identity merging occurs. WAHA account sessions use `ft-<account UUID>`. Encrypted Telegram credentials are separate from dashboard state and model input.
 
-Temporal activities may retry a failed composite batch, including inference if the prior result was not committed. Independent inference-result checkpoints are a future optimization; do not claim they exist. File mode recovers unanalyzed messages after restart but does not provide distributed durability.
+## Approval and delivery
 
-Production configuration requires Tiger PostgreSQL, Temporal and individual account login. QR connector and Temporal development server remain private. No account numbers or provider keys are committed. Real integration and hosted tests await deployment configuration.
+Immediate replies use the owner's reviewed recipient and text. Scheduled follow-ups also require exact approved time, task revision and conversation sequence. New conversation activity and task changes pause approvals. Closed tasks, changed revisions and sends over fifteen minutes late cannot silently proceed. Internal reminders are dashboard notifications.
 
+Outbox request IDs prevent repeated immediate requests from dispatching twice. Provider IDs/echoes can confirm delivery; unresolved outcomes become uncertain and are never blindly retried. Text/time echo reconciliation is a pilot heuristic rather than an exactly-once guarantee. On restart, interrupted sends become uncertain, approved schedules are re-enqueued, and existing account Telegram sessions are restored.
 
-## Account isolation (15 October 2026)
+## Recovery and limits
 
-Authenticated opaque sessions resolve an account ID on the server. An AsyncLocalStorage workspace context is required by state and retrieval operations; missing context fails closed. Each account has a separate state row/file. Retrieval uses a composite `(workspace_id,id)` key and workspace filters in both keyword/vector branches and the final join, including when message or client IDs collide across accounts.
+Temporal activities can retry failed batches, including inference when a result was not committed. Independent inference-result checkpoints are not implemented. Telegram performs bounded newer-message recovery (up to 100) for previously captured allowed conversations; complete historical import and prolonged-offline guarantees are not implemented. WhatsApp has no complete historical backfill/reconciliation path.
 
-Each registered user has WAHA session `ft-<account UUID>`. Signed webhooks map the session to an account before phone/allowlist verification. The shared connector key is server-only. Pairing controllers are keyed by account session. `conversationWorkflowV2`, `sendWorkflowV2`, and `reminderWorkflowV2` carry the tenant in their arguments, use namespaced workflow IDs and run on `followthrough-v2`. Activity wrappers restore the workspace context before calling service functions. Legacy singleton history is preserved on the old queue and never assigned to a new registrant.
-
-Passwords use asynchronous salted scrypt and timing-safe comparison. Login limits and revocable hashed sessions persist in Tiger or the single-process local auth file. Cookie sessions have seven-day absolute and 24-hour idle expiry, with CSRF header/origin checks on mutations. Production cookies require HTTPS. Changing the saved owner number requires disconnecting the current WhatsApp session first. Removed client numbers retain history but cannot receive new ingestion or sends.
-
-## Telegram channel (15 October 2026)
-
-An embedded GramJS MTProto adapter maintains one personal Telegram connection per authenticated account. QR login is initiated only by the owner; optional two-step verification is consumed in memory. The linked account's phone must match its saved Telegram owner number. StringSession secrets are AES-256-GCM encrypted in a separate private repository with workspace-bound authenticated data; they never enter model context or dashboard state.
-
-Clients/conversations carry a provider and authoritative provider peer ID. Legacy clients default to WhatsApp. Telegram private-user updates normalize to the existing message contract with IDs namespaced by workspace, peer and provider message ID. The same Temporal conversation workflow, source-evidence checks, Gemma extraction, task calendar, approvals and outbox serve both channels. Task provenance comes from the stored conversation, never a model-selected channel. Sending dispatches by the stored client channel. Cross-platform contacts are not automatically merged.
-
-Telegram starts/restores inside the API, uses the embedded activity worker for sends, and rejects standalone-worker send attempts to prevent duplicate session ownership. Startup primes private-chat entity caches and performs bounded newer-message recovery for existing allowed chats. Cold historical import, multi-instance session leases, unrestricted offline backfill and media/edit/delete processing are not implemented. Browser workers do not provide provider access. No new Redis or additional Telegram server is introduced.
+The deployed Temporal server uses persistent SQLite development storage. Shared adapter leases, horizontal scaling, production HA orchestration, media analysis, group support and email recovery/MFA are outside the current implementation. Latest observations and unverified live paths are listed in [validation](../testing/VALIDATION.md).

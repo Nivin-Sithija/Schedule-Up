@@ -49,7 +49,7 @@ box(48,37,51,51,fill='#14171e',stroke='#14171e',r=16,width=0);line([(61,64),(70,
 text(117,37,'ScheduleUp',36,'#14171e',True);text(117,82,'High-level system architecture',22,'#748195')
 text(1360,48,'Solid paths: implemented components',19);line([(1320,58),(1348,58)],'#58728e',3)
 text(1360,82,'Boundary: hosted application and connectors',19);line([(1320,92),(1348,92)],'#7696bc',3,True)
-# App boundary (target deployment, not current runtime grouping)
+# Hosted service boundary; cards represent logical components
 box(294,165,1375,995,fill='#fcfdff',stroke='#8aa7ca',r=22,width=2,dashed=True)
 box(319,146,1090,38,fill='#ffffff',stroke='#ffffff',r=4,width=0)
 text(332,151,'APPLICATION + CONNECTORS  /  Render · three Starter services',22,'#426d9d',True)
@@ -62,8 +62,8 @@ card(334,608,300,281,'Channel adapters','CH','#287f84',['WhatsApp → WAHA','Tel
 card(748,608,370,281,'Temporal','T','#c08537',['Durable conversation signals','Per-client ordered batches','Activity retries + reminders','Persistent follow-up timers'],tag='Pilot: SQLite server + persistent disk')
 card(1250,608,378,323,'Activity worker + Mastra','AI','#326ba1',['Bounded two-sided context','Hybrid agreement retrieval','Gemma extraction / repair','Schema + evidence checks','Calendar + revision rules'],tag='Embedded worker in API process')
 card(1748,223,410,281,'Tiger Data · PostgreSQL','DB','#326ba1',['Accounts + sessions','Messages, tasks + schedules','Encrypted Telegram sessions','pgvector + keyword search','Account / client-scoped data'])
-card(1748,608,410,239,'Gemma inference','G','#287f84',['Ollama · working locally','OpenRouter · Google BYOK','Commitments + reply drafts'],tag='Hosted extraction + draft checks passed')
-card(1748,941,410,210,'Live deployment','R','#8467a4',['scheduleup.tech · HTTPS','Three Starter services'],tag='$21.50/month base + usage extras')
+card(1748,608,410,239,'Gemma inference','G','#287f84',['OpenRouter · hosted Gemma','Primary 26B / fallback 31B','Commitments + reply drafts'],tag='Primary passes; fallback degraded at audit')
+card(1748,941,410,210,'Live deployment','R','#8467a4',['scheduleup.tech · HTTPS','Three Starter services'],tag='One instance per Render service')
 # Connections and readable labels
 arrow([(257,324),(334,324)],both=True);label(263,292,'Web')
 arrow([(634,324),(748,324)],both=True);label(652,292,'REST')
@@ -77,7 +77,7 @@ arrow([(1440,608),(1440,553),(1953,553),(1953,504)],both=True);label(1477,519,'C
 arrow([(1440,931),(1440,990),(484,990),(484,889)],c='#698a7a');label(668,958,'Approved follow-ups → send eligibility check → channel')
 # Operational notes inside target boundary
 box(332,1041,1298,88,fill='#f2f5f9',stroke='#e4eaf1',r=12,width=1)
-text(352,1058,'Development: API + Ollama on host; Docker Compose runs WAHA + Temporal.',20,'#52667d')
+text(352,1058,'App service embeds the activity worker, Mastra agents and GramJS adapter.',20,'#52667d')
 text(352,1092,'Hosted: app / embedded worker + private WAHA + private Temporal; Tiger stays external.',20,'#52667d')
 text(49,1191,'Incoming batches reach inference directly; Tiger persistence runs alongside analysis. Validated results update the shared calendar.',20,'#647286')
 text(49,1220,'AI never sends on its own. Replies are owner-reviewed; scheduled sends require an unchanged task, conversation and approval.',19,'#647286')
@@ -86,3 +86,57 @@ root=Path(__file__).resolve().parents[1]/'docs'/'architecture';root.mkdir(parent
 (root/'scheduleup-architecture.svg').write_text('\n'.join(svg))
 im.save(root/'scheduleup-architecture.png')
 print('Created docs/architecture/scheduleup-architecture.svg and .png')
+
+# Use-case diagram: actor associations are deliberately undirected.
+W,H=2200,1450
+im=Image.new('RGB',(W,H),'#ffffff');d=ImageDraw.Draw(im)
+svg=[f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">','<rect width="100%" height="100%" fill="white"/>']
+text(65,40,'ScheduleUp',36,'#14171e',True)
+text(65,92,'Use-case diagram · implemented product behavior',24,'#647286')
+box(410,170,1320,1130,fill='#fcfdff',stroke='#8aa7ca',r=22,width=2)
+text(445,192,'SCHEDULEUP',22,'#426d9d',True)
+def actor(x,y,title,subtitle):
+ d.ellipse((x-19,y,x+19,y+38),outline='#182c49',width=3)
+ svg.append(f'<circle cx="{x}" cy="{y+19}" r="19" fill="white" stroke="#182c49" stroke-width="3"/>')
+ line([(x,y+38),(x,y+95)],'#182c49',3)
+ line([(x-35,y+59),(x+35,y+59)],'#182c49',3)
+ line([(x-30,y+130),(x,y+95),(x+30,y+130)],'#182c49',3)
+ text(x-95,y+145,title,24,'#182c49',True)
+ text(x-95,y+181,subtitle,18)
+def usecase(x,y,title,subtitle):
+ box(x,y,490,104,fill='#eef4fa',stroke='#b9cee2',r=46)
+ text(x+28,y+23,title,23,'#234d72',True)
+ text(x+28,y+60,subtitle,18,'#52667d')
+actor(170,450,'Business owner','Uses the dashboard')
+actor(1960,240,'Client','Existing messaging app')
+box(1815,630,330,112,fill='#edf5f3',stroke='#b8d5cc')
+text(1840,654,'Channel services',24,'#287f84',True);text(1840,697,'WhatsApp and Telegram',18)
+box(1815,865,330,112,fill='#edf5f3',stroke='#b8d5cc')
+text(1840,889,'Hosted Gemma',24,'#287f84',True);text(1840,932,'Analysis and draft support',18)
+box(1815,1100,330,112,fill='#faf2e7',stroke='#e3ccb0')
+text(1840,1124,'Temporal',24,'#98621f',True);text(1840,1167,'Batches, retries and timers',18)
+left=[('Register and sign in','Isolated account workspace'),('Connect and allow clients','QR linking and owner verification'),('View conversations / evidence','Allowed chats and source messages'),('Manage tasks and calendar','Dates, responsibility and history'),('Review proposed changes','Approve or reject uncertain updates'),('Edit drafts and templates','Review the exact reply text'),('Approve / cancel follow-ups','Exact text, recipient and future time'),('Read internal reminders','Dashboard notifications')]
+# Associations are routed outside the use-case column.
+for i,(title,sub) in enumerate(left):
+ y=265+i*123
+ line([(275,540),(365,540),(365,y+52),(460,y+52)],'#a1adbb',2)
+ usecase(460,y,title,sub)
+right=[(305,'Exchange private text','Owner and client use their channels'),(590,'Ingest allowed messages','Verify identity; pause old follow-ups'),(790,'Extract / validate commitments','Evidence, dates and revisions'),(990,'Send owner-approved text','Check approval and current eligibility')]
+for y,title,sub in right:usecase(1150,y,title,sub)
+line([(1960,430),(1960,470),(1670,470),(1670,357),(1640,357)],'#a1adbb',2)
+line([(1815,686),(1765,686),(1765,642),(1640,642)],'#a1adbb',2)
+line([(1815,710),(1765,710),(1765,1042),(1640,1042)],'#a1adbb',2)
+line([(1815,921),(1710,921),(1710,842),(1640,842)],'#a1adbb',2)
+line([(1815,1156),(1745,1156),(1745,870),(1640,870)],'#a1adbb',2)
+arrow([(1395,694),(1395,790)])
+label(1415,733,'Analyze')
+arrow([(950,932),(1005,932),(1005,1015),(1150,1015)])
+label(1000,908,'Reviewed reply')
+arrow([(950,1055),(1040,1055),(1040,1042),(1150,1042)])
+label(990,1010,'Approval')
+text(65,1350,'Actors associate with supported use cases; arrows indicate selected internal dependencies.',21,'#647286')
+text(65,1390,'AI assists extraction and drafting. Sending always requires owner-reviewed text and deterministic eligibility checks.',21,'#647286')
+svg.append('</svg>')
+(root/'scheduleup-use-cases.svg').write_text('\n'.join(svg))
+im.save(root/'scheduleup-use-cases.png')
+print('Created docs/architecture/scheduleup-use-cases.svg and .png')
