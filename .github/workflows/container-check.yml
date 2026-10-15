@@ -1,0 +1,19 @@
+name: Render container check
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Build Render application image (native AMD64)
+        run: docker build --progress=plain -t followthrough:ci .
+      - name: Run regression suite inside Linux image
+        run: docker run --rm --network none -e NODE_ENV=test -e STORE_DRIVER=file -e DURABLE_MODE=local followthrough:ci npm test
+      - name: Verify bundled embedding model without network
+        run: docker run --rm --network none followthrough:ci node scripts/prewarm-embeddings.mjs
