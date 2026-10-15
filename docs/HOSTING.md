@@ -38,8 +38,10 @@ OpenRouter's documented free-model limits are 50/day and 20/minute without the q
 
 ## Current preflight result
 
-Native AMD64 container verification passed in [GitHub Actions](https://github.com/Nivin-Sithija/followthrough/actions/runs/38674034084): image build, 80 tests, and offline embedding inference. WAHA's pinned image manifest supports Linux AMD64. Render API authentication succeeds and Blueprint validation now passes after billing setup. The owner approved the revised three-Starter demo plan plus two 1 GB disks on 15 October 2026. GitHub repository access was granted. Private WAHA and Temporal services have been created and resumed following the budget review; app provisioning and full hosted acceptance checks are pending.
+Native AMD64 container verification passed in [GitHub Actions](https://github.com/Nivin-Sithija/followthrough/actions/runs/38674034084): image build, 80 tests, and offline embedding inference. WAHA's pinned image manifest supports Linux AMD64. Render API authentication succeeds and Blueprint validation now passes after billing setup. The owner approved the revised three-Starter demo plan plus two 1 GB disks on 15 October 2026. GitHub repository access was granted. All three services have been created and are live; full hosted acceptance checks are pending.
 
-The selected custom domain is `scheduleup.tech`. Its authoritative nameservers are the `.tech domains` OrderBox nameservers; no apex IPv4 record was present at preflight. Obtain the actual target from Render after app creation before changing DNS. Domain HTTPS has not been verified.
+The app is live at `https://followthrough.onrender.com` on Starter. All three services are live. The hosted root page, favicon, health endpoint and signed-out account endpoint return 200; protected `/api/state` returns 401 without a session. The local API/worker was stopped before cutover. User login, WhatsApp QR relinking, Telegram connection confirmation, and hosted message/calendar acceptance checks are pending.
+
+The selected custom domain is `scheduleup.tech`, added to Render together with its www redirect. Its authoritative nameservers are the `.tech domains` OrderBox nameservers. Required DNS: apex A `216.24.57.1`; www CNAME `followthrough.onrender.com`. Domain DNS and HTTPS have not been verified.
 
 OpenRouter's free Gemma endpoint still returned HTTP 429 on the latest small inference check. A valid key and unused personal quota do not establish provider availability; hosted AI acceptance checks remain pending.
