@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
-import {writeFile} from 'node:fs/promises';
+import {mkdir,writeFile} from 'node:fs/promises';
 import {config} from '../src/config.js';
 import {withWorkspace} from '../src/tenant.js';
 import {initStore,createWorkspace,getState,mutate} from '../src/store.js';
@@ -53,7 +53,8 @@ try{
  await withWorkspace(tenant,async()=>{await indexMessages((await getState()).messages);});
 }finally{
  const report=`# Calendar conversation scenarios\n\nLocal Gemma + Mastra extraction → Tiger persistence → the dashboard calendar function. Fixed message date: 15 October 2026, timezone Asia/Colombo. Synthetic test workspace; no provider sends or real client changes. Existing-task cases use seeded previously accepted tasks. Temporal and live transport are outside this test.\n\n${results.filter(r=>r.pass).length}/${results.length} scenarios passed.\n\n`+results.map(r=>`## ${r.pass?'PASS':'FAIL'}: ${r.name}\n\n${r.messages.map(m=>'> '+m).join('\n>\n')}\n\nExpected: ${r.expected}\n\n${r.error?'Failure: '+r.error+'\n\n':''}Observed (${r.ms} ms):\n\n\`\`\`json\n${JSON.stringify(r.observed,null,2)}\n\`\`\`\n`).join('\n');
- await writeFile('CALENDAR-SCENARIOS.md',report);
+ await mkdir('docs/testing',{recursive:true});
+ await writeFile('docs/testing/CALENDAR-SCENARIOS.md',report);
  await databasePool().query('DELETE FROM ft_chunks_v2 WHERE workspace_id=$1',[tenant]);await databasePool().query('DELETE FROM ft_workspace WHERE id=$1',[tenant]);await closeDatabase();
 }
 if(results.length!==scenarios.length||results.some(r=>!r.pass))process.exitCode=1;

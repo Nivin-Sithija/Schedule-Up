@@ -2,6 +2,22 @@
 
 A WhatsApp and Telegram client workspace for commitments, dates, missing inputs and approved follow-ups. Both sides of the conversation inform the task tracker. AI proposes; deterministic application code validates and commits.
 
+## Repository layout
+
+| Folder | Contents |
+|---|---|
+| `src/` | API, agents, workflows, storage and channel adapters |
+| `src/ui/` | React dashboard and styles |
+| `public/` | Static browser assets |
+| `tests/` | Automated regression tests |
+| `scripts/` | Development, evaluation and deployment helpers |
+| `infra/` | Temporal container and startup scripts |
+| `docs/` | Architecture, deployment, demo, planning and validation documentation |
+| `.github/` | CI workflows |
+| `.vscode/` | Run and Debug configuration |
+
+See the [documentation index](docs/README.md). Package, build, Docker Compose and Render entry-point configuration stays at the root for standard tool discovery. Generated files and local secrets remain ignored.
+
 ## Local development
 
 The default is **Ollama + simulated WhatsApp + a file-backed local scheduler**. No OpenRouter key is used and no real messages are sent.
@@ -73,7 +89,7 @@ The current UI can cancel schedules and create new approvals. Automatic historic
 
 ## Target tracks
 
-The active targets are Gemma, Mastra, Tiger Data, Temporal and Render. Gemma and Mastra power extraction and drafting; Tiger stores confirmed state and retrieves agreements; Temporal owns durable processing and timers; Render hosts the app. Sentry was removed from the project plan at the owner's request. Follow `template.md` for the final submission and report actual pilot feedback rather than invented results.
+The active targets are Gemma, Mastra, Tiger Data, Temporal and Render. Gemma and Mastra power extraction and drafting; Tiger stores confirmed state and retrieves agreements; Temporal owns durable processing and timers; Render hosts the app. Sentry was removed from the project plan at the owner's request. Follow `docs/submission/template.md` for the final submission and report actual pilot feedback rather than invented results.
 
 ## Attribution
 
@@ -131,6 +147,6 @@ Run one API instance with its embedded worker for Telegram. A standalone worker 
 
 `npm test` covers provider isolation, authenticated encryption, account access controls, scheduling and task rules. `npm run test:workflow` additionally requires Ollama, Tiger and Temporal: it creates an isolated temporary workspace, feeds synthetic WhatsApp and Telegram events through real Gemma/Temporal/Tiger, restarts its test worker, verifies tasks/calendar/drafts/reminders/completion, then terminates its test workflows and removes only its test records. It never sends real messages. Stop the API before this recovery check so its embedded worker does not consume the test workflow during the planned restart. Optional `TEST_OWNER_PHONE_E164` and `TEST_CLIENT_PHONE_E164` select test identities; legacy local test-number variables are accepted by this script only.
 
-`npm run test:calendar` checks realistic conversational acceptance, changed dates and times, explanations, multiple deliverables, completion, cancellation, client inputs, refusals, conditional language, midnight boundaries and duplicate messages. It runs local Gemma through the task service and Tiger in a disposable workspace, checks the same calendar function used by the dashboard, and writes examples and observed results to `CALENDAR-SCENARIOS.md`. The API may stay running; this check does not send provider messages or test Temporal recovery. `npm run test:commitments` provides three smaller extraction-only checks.
+`npm run test:calendar` checks realistic conversational acceptance, changed dates and times, explanations, multiple deliverables, completion, cancellation, client inputs, refusals, conditional language, midnight boundaries and duplicate messages. It runs local Gemma through the task service and Tiger in a disposable workspace, checks the same calendar function used by the dashboard, and writes examples and observed results to `docs/testing/CALENDAR-SCENARIOS.md`. The API may stay running; this check does not send provider messages or test Temporal recovery. `npm run test:commitments` provides three smaller extraction-only checks.
 
 Live end-to-end Telegram validation requires your application credentials, a registered account, QR confirmation and a real message from an allowed client. Automated adapter/pipeline checks do not replace that live test.

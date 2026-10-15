@@ -1,6 +1,6 @@
 # Architecture and context policy
 
-[High-level architecture diagram and component guide](docs/SYSTEM-OVERVIEW.md) · [PNG](docs/followthrough-architecture.png) · [SVG](docs/followthrough-architecture.svg)
+[High-level architecture diagram and component guide](SYSTEM-OVERVIEW.md) · [PNG](followthrough-architecture.png) · [SVG](followthrough-architecture.svg)
 
 ## Durable intake, direct inference
 

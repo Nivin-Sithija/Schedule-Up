@@ -36,5 +36,5 @@ and hybrid retrieval; Temporal carries durable account-scoped workflows. Telegra
 uses GramJS with encrypted sessions. Render and scheduleup.tech are live; the owner
 confirmed both channel connections. Hosted Gemma extraction and drafting passed.
 Sentry is excluded from the active targets. Do not claim SMS, first-user payment or
-unverified workflow outcomes. See VALIDATION.md for recorded checks.
+unverified workflow outcomes. See ../testing/VALIDATION.md for recorded checks.
 -->
