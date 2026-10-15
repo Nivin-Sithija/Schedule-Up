@@ -16,6 +16,7 @@ This is a single-instance pilot deployment. The app/embedded worker, private WAH
 - App: import values from `data/deploy/render-app.env`. Set APP_ORIGINS to the exact HTTPS `onrender.com` origin initially; add the custom domain's exact HTTPS origin when provided. Values must match the browser's Origin header, without trailing slashes.
 - WAHA: import `data/deploy/render-waha.env`, supplying WHATSAPP_HOOK_URL as `https://<app-host>/api/webhooks/waha`. Its API and HMAC keys must match the app's corresponding values.
 - Blueprint references supply private WAHA and Temporal addresses. The API and connectors listen privately/publicly according to their Render service types. Do not expose WAHA or Temporal directly to the internet.
+- Temporal exposes private gRPC on port 7233; its HTTP API listens on Render's assigned PORT (10000), preventing HTTP port autodetection from redirecting gRPC traffic. Set TEMPORAL_ADDRESS to the private Temporal hostname with :7233 when using the API deployment; do not use its HTTP hostport.
 - Both private services need persistent writable disks. Temporal is the SQLite development-server deployment for this controlled pilot, not a production HA cluster.
 - The application Dockerfile preloads and verifies the MiniLM embedding model at build time, using EMBEDDING_CACHE_PATH. Gemma itself is hosted by OpenRouter, not inside the Render app container.
 

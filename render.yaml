@@ -19,11 +19,11 @@ services:
         value: temporal
       - key: WHATSAPP_PROVIDER
         value: waha
-      - key: TEMPORAL_ADDRESS
+      - key: TEMPORAL_HOST
         fromService:
           type: pserv
           name: followthrough-temporal
-          property: hostport
+          property: host
       - key: WAHA_HOSTPORT
         fromService:
           type: pserv
