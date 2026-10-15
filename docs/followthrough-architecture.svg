@@ -1,0 +1,204 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2200" height="1250" viewBox="0 0 2200 1250">
+<rect width="100%" height="100%" fill="white"/>
+<rect x="48" y="37" width="51" height="51" rx="16" fill="#14171e" stroke="#14171e" stroke-width="0"/>
+<polyline points="61,64 70,73 87,53" fill="none" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/>
+<text x="117" y="67.6" font-family="Arial,Helvetica,sans-serif" font-size="36" fill="#14171e" font-weight="700">FollowThrough</text>
+<text x="117" y="100.7" font-family="Arial,Helvetica,sans-serif" font-size="22" fill="#748195" font-weight="400">High-level system architecture</text>
+<text x="1360" y="64.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#4b596b" font-weight="400">Solid paths: implemented locally</text>
+<polyline points="1320,58 1348,58" fill="none" stroke="#58728e" stroke-width="3" stroke-linejoin="round"/>
+<text x="1360" y="98.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#4b596b" font-weight="400">Dashed boundary / path: deployment or export pending</text>
+<polyline points="1320,92 1348,92" fill="none" stroke="#7696bc" stroke-width="3" stroke-linejoin="round" stroke-dasharray="9 8"/>
+<polyline points="316,165 1647,165" fill="none" stroke="#8aa7ca" stroke-width="2" stroke-linejoin="round" stroke-dasharray="9 8"/>
+<polyline points="316,1160 1647,1160" fill="none" stroke="#8aa7ca" stroke-width="2" stroke-linejoin="round" stroke-dasharray="9 8"/>
+<polyline points="294,187 294,1138" fill="none" stroke="#8aa7ca" stroke-width="2" stroke-linejoin="round" stroke-dasharray="9 8"/>
+<polyline points="1669,187 1669,1138" fill="none" stroke="#8aa7ca" stroke-width="2" stroke-linejoin="round" stroke-dasharray="9 8"/>
+<rect x="294" y="165" width="1375" height="995" rx="22" fill="#fcfdff" stroke="#8aa7ca" stroke-width="2" stroke-dasharray="9 8"/>
+<rect x="319" y="146" width="1090" height="38" rx="4" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="332" y="169.7" font-family="Arial,Helvetica,sans-serif" font-size="22" fill="#426d9d" font-weight="700">APPLICATION + CONNECTORS  /  Render deployment target — not yet deployed</text>
+<rect x="42" y="235" width="215" height="215" rx="18" fill="#fff" stroke="#dfe5ed" stroke-width="2"/>
+<rect x="43" y="236" width="213" height="65" rx="16" fill="#182c49" stroke="#182c49" stroke-width="0"/>
+<rect x="59" y="250" width="36" height="36" rx="10" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="67" y="274.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#182c49" font-weight="700">U</text>
+<text x="108" y="277.4" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#ffffff" font-weight="700">Owner</text>
+<circle cx="66" cy="333" r="3" fill="#182c49"/>
+<text x="82" y="341.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Browser access</text>
+<circle cx="66" cy="375" r="3" fill="#182c49"/>
+<text x="82" y="383.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Own account</text>
+<circle cx="66" cy="417" r="3" fill="#182c49"/>
+<text x="82" y="425.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Review / approve</text>
+<rect x="42" y="638" width="215" height="255" rx="18" fill="#fff" stroke="#dfe5ed" stroke-width="2"/>
+<rect x="43" y="639" width="213" height="65" rx="16" fill="#182c49" stroke="#182c49" stroke-width="0"/>
+<rect x="59" y="653" width="36" height="36" rx="10" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="67" y="677.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#182c49" font-weight="700">C</text>
+<text x="108" y="680.4" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#ffffff" font-weight="700">Messaging</text>
+<circle cx="66" cy="736" r="3" fill="#182c49"/>
+<text x="82" y="744.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Owner + clients</text>
+<circle cx="66" cy="778" r="3" fill="#182c49"/>
+<text x="82" y="786.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">WhatsApp</text>
+<circle cx="66" cy="820" r="3" fill="#182c49"/>
+<text x="82" y="828.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Telegram</text>
+<text x="63" y="873.45" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#8490a1" font-weight="400">Allowed clients only</text>
+<rect x="334" y="223" width="300" height="239" rx="18" fill="#fff" stroke="#dfe5ed" stroke-width="2"/>
+<rect x="335" y="224" width="298" height="65" rx="16" fill="#326ba1" stroke="#326ba1" stroke-width="0"/>
+<rect x="351" y="238" width="36" height="36" rx="10" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="359" y="262.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#326ba1" font-weight="700">UI</text>
+<text x="400" y="265.4" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#ffffff" font-weight="700">React dashboard</text>
+<circle cx="358" cy="321" r="3" fill="#326ba1"/>
+<text x="374" y="329.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Inbox + templates</text>
+<circle cx="358" cy="363" r="3" fill="#326ba1"/>
+<text x="374" y="371.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Tasks + calendar</text>
+<circle cx="358" cy="405" r="3" fill="#326ba1"/>
+<text x="374" y="413.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Scheduled follow-ups</text>
+<circle cx="358" cy="447" r="3" fill="#326ba1"/>
+<text x="374" y="455.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Connection settings</text>
+<rect x="748" y="223" width="370" height="281" rx="18" fill="#fff" stroke="#dfe5ed" stroke-width="2"/>
+<rect x="749" y="224" width="368" height="65" rx="16" fill="#287f84" stroke="#287f84" stroke-width="0"/>
+<rect x="765" y="238" width="36" height="36" rx="10" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="773" y="262.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#287f84" font-weight="700">API</text>
+<text x="814" y="265.4" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#ffffff" font-weight="700">Fastify API</text>
+<circle cx="772" cy="321" r="3" fill="#287f84"/>
+<text x="788" y="329.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Accounts + secure sessions</text>
+<circle cx="772" cy="363" r="3" fill="#287f84"/>
+<text x="788" y="371.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Workspace / client isolation</text>
+<circle cx="772" cy="405" r="3" fill="#287f84"/>
+<text x="788" y="413.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Message ingestion + allowlists</text>
+<circle cx="772" cy="447" r="3" fill="#287f84"/>
+<text x="788" y="455.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Drafts + send approvals</text>
+<circle cx="772" cy="489" r="3" fill="#287f84"/>
+<text x="788" y="497.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Task queries + updates</text>
+<rect x="334" y="608" width="300" height="281" rx="18" fill="#fff" stroke="#dfe5ed" stroke-width="2"/>
+<rect x="335" y="609" width="298" height="65" rx="16" fill="#287f84" stroke="#287f84" stroke-width="0"/>
+<rect x="351" y="623" width="36" height="36" rx="10" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="359" y="647.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#287f84" font-weight="700">CH</text>
+<text x="400" y="650.4" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#ffffff" font-weight="700">Channel adapters</text>
+<circle cx="358" cy="706" r="3" fill="#287f84"/>
+<text x="374" y="714.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">WhatsApp → WAHA</text>
+<circle cx="358" cy="748" r="3" fill="#287f84"/>
+<text x="374" y="756.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Telegram → GramJS</text>
+<circle cx="358" cy="790" r="3" fill="#287f84"/>
+<text x="374" y="798.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Owner + client text</text>
+<circle cx="358" cy="832" r="3" fill="#287f84"/>
+<text x="374" y="840.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Replies + delivery echoes</text>
+<text x="355" y="869.45" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#8490a1" font-weight="400">GramJS runs inside the API</text>
+<rect x="748" y="608" width="370" height="281" rx="18" fill="#fff" stroke="#dfe5ed" stroke-width="2"/>
+<rect x="749" y="609" width="368" height="65" rx="16" fill="#c08537" stroke="#c08537" stroke-width="0"/>
+<rect x="765" y="623" width="36" height="36" rx="10" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="773" y="647.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#c08537" font-weight="700">T</text>
+<text x="814" y="650.4" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#ffffff" font-weight="700">Temporal</text>
+<circle cx="772" cy="706" r="3" fill="#c08537"/>
+<text x="788" y="714.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Durable conversation signals</text>
+<circle cx="772" cy="748" r="3" fill="#c08537"/>
+<text x="788" y="756.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Per-client ordered batches</text>
+<circle cx="772" cy="790" r="3" fill="#c08537"/>
+<text x="788" y="798.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Activity retries + reminders</text>
+<circle cx="772" cy="832" r="3" fill="#c08537"/>
+<text x="788" y="840.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Persistent follow-up timers</text>
+<text x="769" y="869.45" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#8490a1" font-weight="400">Local: SQLite development server</text>
+<rect x="1250" y="608" width="378" height="323" rx="18" fill="#fff" stroke="#dfe5ed" stroke-width="2"/>
+<rect x="1251" y="609" width="376" height="65" rx="16" fill="#326ba1" stroke="#326ba1" stroke-width="0"/>
+<rect x="1267" y="623" width="36" height="36" rx="10" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="1275" y="647.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#326ba1" font-weight="700">AI</text>
+<text x="1316" y="650.4" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#ffffff" font-weight="700">Activity worker + Mastra</text>
+<circle cx="1274" cy="706" r="3" fill="#326ba1"/>
+<text x="1290" y="714.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Bounded two-sided context</text>
+<circle cx="1274" cy="748" r="3" fill="#326ba1"/>
+<text x="1290" y="756.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Hybrid agreement retrieval</text>
+<circle cx="1274" cy="790" r="3" fill="#326ba1"/>
+<text x="1290" y="798.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Gemma extraction / repair</text>
+<circle cx="1274" cy="832" r="3" fill="#326ba1"/>
+<text x="1290" y="840.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Schema + evidence checks</text>
+<circle cx="1274" cy="874" r="3" fill="#326ba1"/>
+<text x="1290" y="882.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Calendar + revision rules</text>
+<text x="1271" y="911.45" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#8490a1" font-weight="400">Embedded worker in API process</text>
+<rect x="1748" y="223" width="410" height="281" rx="18" fill="#fff" stroke="#dfe5ed" stroke-width="2"/>
+<rect x="1749" y="224" width="408" height="65" rx="16" fill="#326ba1" stroke="#326ba1" stroke-width="0"/>
+<rect x="1765" y="238" width="36" height="36" rx="10" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="1773" y="262.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#326ba1" font-weight="700">DB</text>
+<text x="1814" y="265.4" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#ffffff" font-weight="700">Tiger Data · PostgreSQL</text>
+<circle cx="1772" cy="321" r="3" fill="#326ba1"/>
+<text x="1788" y="329.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Accounts + sessions</text>
+<circle cx="1772" cy="363" r="3" fill="#326ba1"/>
+<text x="1788" y="371.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Messages, tasks + schedules</text>
+<circle cx="1772" cy="405" r="3" fill="#326ba1"/>
+<text x="1788" y="413.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Encrypted Telegram sessions</text>
+<circle cx="1772" cy="447" r="3" fill="#326ba1"/>
+<text x="1788" y="455.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">pgvector + keyword search</text>
+<circle cx="1772" cy="489" r="3" fill="#326ba1"/>
+<text x="1788" y="497.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Account / client-scoped data</text>
+<rect x="1748" y="608" width="410" height="239" rx="18" fill="#fff" stroke="#dfe5ed" stroke-width="2"/>
+<rect x="1749" y="609" width="408" height="65" rx="16" fill="#287f84" stroke="#287f84" stroke-width="0"/>
+<rect x="1765" y="623" width="36" height="36" rx="10" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="1773" y="647.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#287f84" font-weight="700">G</text>
+<text x="1814" y="650.4" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#ffffff" font-weight="700">Gemma inference</text>
+<circle cx="1772" cy="706" r="3" fill="#287f84"/>
+<text x="1788" y="714.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Ollama · working locally</text>
+<circle cx="1772" cy="748" r="3" fill="#287f84"/>
+<text x="1788" y="756.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">OpenRouter · hosted target</text>
+<circle cx="1772" cy="790" r="3" fill="#287f84"/>
+<text x="1788" y="798.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Commitments + reply drafts</text>
+<text x="1769" y="827.45" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#8490a1" font-weight="400">Hosted inference not yet tested</text>
+<rect x="1748" y="941" width="410" height="210" rx="18" fill="#fff" stroke="#dfe5ed" stroke-width="2"/>
+<rect x="1749" y="942" width="408" height="65" rx="16" fill="#8467a4" stroke="#8467a4" stroke-width="0"/>
+<rect x="1765" y="956" width="36" height="36" rx="10" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="1773" y="980.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#8467a4" font-weight="700">S</text>
+<text x="1814" y="983.4" font-family="Arial,Helvetica,sans-serif" font-size="24" fill="#ffffff" font-weight="700">Sentry tracing</text>
+<circle cx="1772" cy="1039" r="3" fill="#8467a4"/>
+<text x="1788" y="1047.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Agent / retrieval / commit spans</text>
+<circle cx="1772" cy="1081" r="3" fill="#8467a4"/>
+<text x="1788" y="1089.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#4b596b" font-weight="400">Latency + token attributes</text>
+<text x="1769" y="1131.45" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#8490a1" font-weight="400">Export disabled · DSN pending</text>
+<polyline points="257,324 334,324" fill="none" stroke="#58728e" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="334,324 322.0,330.0 322.0,318.0" fill="#58728e"/>
+<polygon points="257,324 269.0,318.0 269.0,330.0" fill="#58728e"/>
+<rect x="256" y="288" width="51.0" height="28" rx="5" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="263" y="307.3" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#5b718c" font-weight="400">Web</text>
+<polyline points="634,324 748,324" fill="none" stroke="#58728e" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="748,324 736.0,330.0 736.0,318.0" fill="#58728e"/>
+<polygon points="634,324 646.0,318.0 646.0,330.0" fill="#58728e"/>
+<rect x="645" y="288" width="62.0" height="28" rx="5" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="652" y="307.3" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#5b718c" font-weight="400">REST</text>
+<polyline points="1118,324 1748,324" fill="none" stroke="#58728e" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1748,324 1736.0,330.0 1736.0,318.0" fill="#58728e"/>
+<polygon points="1118,324 1130.0,318.0 1130.0,330.0" fill="#58728e"/>
+<rect x="1241" y="288" width="241.0" height="28" rx="5" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="1248" y="307.3" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#5b718c" font-weight="400">Account state + task queries</text>
+<polyline points="257,746 334,746" fill="none" stroke="#58728e" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="334,746 322.0,752.0 322.0,740.0" fill="#58728e"/>
+<polygon points="257,746 269.0,740.0 269.0,752.0" fill="#58728e"/>
+<polyline points="634,746 683,746 683,435 748,435" fill="none" stroke="#58728e" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="748,435 736.0,441.0 736.0,429.0" fill="#58728e"/>
+<polygon points="634,746 646.0,740.0 646.0,752.0" fill="#58728e"/>
+<rect x="632" y="526" width="137.0" height="28" rx="5" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="639" y="545.3" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#5b718c" font-weight="400">Events / replies</text>
+<polyline points="932,504 932,608" fill="none" stroke="#58728e" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="932,608 926.0,596.0 938.0,596.0" fill="#58728e"/>
+<rect x="944" y="542" width="129.0" height="28" rx="5" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="951" y="561.3" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#5b718c" font-weight="400">Durable signal</text>
+<polyline points="1118,749 1250,749" fill="none" stroke="#58728e" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1250,749 1238.0,755.0 1238.0,743.0" fill="#58728e"/>
+<rect x="1129" y="711" width="85.0" height="28" rx="5" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="1136" y="730.3" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#5b718c" font-weight="400">Activities</text>
+<polyline points="1628,714 1748,714" fill="none" stroke="#58728e" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1748,714 1736.0,720.0 1736.0,708.0" fill="#58728e"/>
+<polygon points="1628,714 1640.0,708.0 1640.0,720.0" fill="#58728e"/>
+<rect x="1632" y="674" width="89.0" height="28" rx="5" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="1639" y="693.3" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#5b718c" font-weight="400">Inference</text>
+<polyline points="1440,608 1440,553 1953,553 1953,504" fill="none" stroke="#58728e" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1953,504 1959.0,516.0 1947.0,516.0" fill="#58728e"/>
+<polygon points="1440,608 1434.0,596.0 1446.0,596.0" fill="#58728e"/>
+<rect x="1470" y="515" width="259.0" height="28" rx="5" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="1477" y="534.3" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#5b718c" font-weight="400">Context + validated task writes</text>
+<polyline points="1440,931 1440,990 484,990 484,889" fill="none" stroke="#698a7a" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="484,889 490.0,901.0 478.0,901.0" fill="#698a7a"/>
+<rect x="661" y="954" width="460.0" height="28" rx="5" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="668" y="973.3" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#5b718c" font-weight="400">Approved follow-ups → send eligibility check → channel</text>
+<polyline points="1628,865 1689,865 1689,1028 1748,1028" fill="none" stroke="#947cae" stroke-width="3" stroke-linejoin="round" stroke-dasharray="9 8"/>
+<polygon points="1748,1028 1736.0,1034.0 1736.0,1022.0" fill="#947cae"/>
+<rect x="1692" y="883" width="93.984375" height="28" rx="5" fill="#ffffff" stroke="#ffffff" stroke-width="0"/>
+<text x="1699" y="902.3" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#5b718c" font-weight="400">Telemetry</text>
+<rect x="332" y="1041" width="1298" height="88" rx="12" fill="#f2f5f9" stroke="#e4eaf1" stroke-width="1"/>
+<text x="352" y="1075.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#52667d" font-weight="400">Current local setup: API + Ollama on host; Docker Compose runs WAHA + Temporal.</text>
+<text x="352" y="1109.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#52667d" font-weight="400">Render target: app / embedded worker + private WAHA + private Temporal; Tiger stays external.</text>
+<text x="49" y="1208.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#647286" font-weight="400">Incoming batches reach inference directly; Tiger persistence runs alongside analysis. Validated results update the shared calendar.</text>
+<text x="49" y="1236.15" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#647286" font-weight="400">AI never sends on its own. Replies are owner-reviewed; scheduled sends require an unchanged task, conversation and approval.</text>
+</svg>

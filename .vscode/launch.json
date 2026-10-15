@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "FollowThrough: Start all services",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/node",
+      "runtimeArgs": [
+        "--env-file-if-exists=.env",
+        "--import",
+        "tsx"
+      ],
+      "program": "${workspaceFolder}/src/server.ts",
+      "preLaunchTask": "FollowThrough: prepare workspace",
+      "console": "integratedTerminal",
+      "skipFiles": [
+        "<node_internals>/**",
+        "${workspaceFolder}/node_modules/**"
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "serverReadyAction": {
+        "pattern": "Server listening at (https?://\\S+)",
+        "uriFormat": "http://localhost:3001",
+        "action": "openExternally"
+      },
+      "outputCapture": "std"
+    }
+  ]
+}

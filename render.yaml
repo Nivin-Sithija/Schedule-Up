@@ -1,0 +1,85 @@
+# Single-instance pilot. Review secrets and costs before provisioning.
+services:
+  - type: web
+    name: followthrough
+    runtime: docker
+    plan: standard
+    region: singapore
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: AI_PROVIDER
+        value: openrouter
+      - key: STORE_DRIVER
+        value: postgres
+      - key: DURABLE_MODE
+        value: temporal
+      - key: WHATSAPP_PROVIDER
+        value: waha
+      - key: TEMPORAL_ADDRESS
+        fromService:
+          type: pserv
+          name: followthrough-temporal
+          property: hostport
+      - key: WAHA_HOSTPORT
+        fromService:
+          type: pserv
+          name: followthrough-waha
+          property: hostport
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: TIGER_DATABASE_URL
+        sync: false
+      - key: TIGER_CA_BASE64
+        sync: false
+      - key: WAHA_API_KEY
+        sync: false
+      - key: WAHA_WEBHOOK_HMAC_KEY
+        sync: false
+      - key: APP_ORIGINS
+        sync: false
+      - key: TELEGRAM_API_ID
+        sync: false
+      - key: TELEGRAM_API_HASH
+        sync: false
+      - key: SESSION_ENCRYPTION_KEY
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
+  - type: pserv
+    name: followthrough-waha
+    runtime: image
+    image:
+      url: docker.io/devlikeapro/waha:noweb-2026.9.2
+    plan: starter
+    region: singapore
+    disk:
+      name: waha-session
+      mountPath: /app/.sessions
+      sizeGB: 1
+    envVars:
+      - key: WHATSAPP_DEFAULT_ENGINE
+        value: NOWEB
+      - key: WAHA_DASHBOARD_ENABLED
+        value: "false"
+      - key: WAHA_API_KEY
+        sync: false
+      - key: WHATSAPP_HOOK_HMAC_KEY
+        sync: false
+      - key: WHATSAPP_HOOK_URL
+        sync: false
+      - key: WHATSAPP_HOOK_EVENTS
+        value: message.any,message.ack,session.status
+  - type: pserv
+    name: followthrough-temporal
+    runtime: docker
+    dockerfilePath: ./infra/temporal.Dockerfile
+    plan: starter
+    region: singapore
+    disk:
+      name: temporal-history
+      mountPath: /data
+      sizeGB: 1

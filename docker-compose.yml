@@ -1,0 +1,30 @@
+services:
+  temporal-data-init:
+    image: busybox:stable
+    user: "0:0"
+    command: ["sh", "-c", "chown 1000:1000 /data"]
+    volumes: ["temporal_data:/data"]
+  temporal:
+    depends_on:
+      temporal-data-init:
+        condition: service_completed_successfully
+    image: temporalio/temporal:1.4.1
+    command: server start-dev --ip 0.0.0.0 --db-filename /data/temporal.db
+    ports: ["127.0.0.1:7233:7233", "127.0.0.1:8233:8233"]
+    volumes: ["temporal_data:/data"]
+  waha:
+    image: ${WAHA_IMAGE:-devlikeapro/waha:noweb-2026.9.2}
+    profiles: ["whatsapp"]
+    environment:
+      WHATSAPP_DEFAULT_ENGINE: NOWEB
+      WAHA_API_KEY: ${WAHA_API_KEY}
+      WAHA_DASHBOARD_ENABLED: "false"
+      WAHA_PRINT_QR: "false"
+      WHATSAPP_HOOK_URL: http://host.docker.internal:3001/api/webhooks/waha
+      WHATSAPP_HOOK_EVENTS: message.any,message.ack,session.status
+      WHATSAPP_HOOK_HMAC_KEY: ${WAHA_WEBHOOK_HMAC_KEY}
+    ports: ["127.0.0.1:3000:3000"]
+    volumes: ["waha_sessions:/app/.sessions"]
+volumes:
+  temporal_data:
+  waha_sessions:

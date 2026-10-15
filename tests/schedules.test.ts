@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { scheduleEligibility, type Task, type Schedule } from '../src/domain.js';
+const at=Date.parse('2026-10-16T09:00:00+05:30');
+const task:Task={id:'t',clientId:'a',title:'Proposal',responsible:'owner',status:'open',due:'2026-10-16',evidence:[],revision:2,manual:false,updatedAt:'2026-10-13T09:00:00Z'};
+const item:Schedule={id:'s',clientId:'a',taskId:'t',taskRevision:2,text:'Checking in',at:new Date(at).toISOString(),approvedSeq:3,status:'approved'};
+test('approved unchanged due messages can dispatch',()=>assert.equal(scheduleEligibility(item,task,3,at),null));
+test('future messages cannot dispatch early',()=>assert.equal(scheduleEligibility(item,task,3,at-1),'Not due yet'));
+test('new conversation activity invalidates approval',()=>assert.equal(scheduleEligibility(item,task,4,at),'Conversation changed'));
+test('task edits invalidate approval',()=>assert.equal(scheduleEligibility(item,{...task,revision:3},3,at),'Task approval is stale'));
+test('cancelled tasks cannot trigger followups',()=>assert.equal(scheduleEligibility(item,{...task,status:'cancelled'},3,at),'Task is closed or awaiting review'));
+test('completed tasks cannot trigger followups',()=>assert.equal(scheduleEligibility(item,{...task,status:'completed'},3,at),'Task is closed or awaiting review'));
+test('delayed sends require renewed approval',()=>assert.equal(scheduleEligibility(item,task,3,at+900001),'More than fifteen minutes overdue'));
+test('uncertain sends cannot be retried automatically',()=>assert.equal(scheduleEligibility({...item,status:'uncertain'},task,3,at),'Not approved'));

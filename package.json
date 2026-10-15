@@ -1,0 +1,50 @@
+{
+  "name": "followthrough",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env --import tsx --watch src/server.ts",
+    "worker": "node --env-file-if-exists=.env --import tsx src/worker.ts",
+    "ui": "vite",
+    "build": "vite build && tsc --noEmit",
+    "start": "node --env-file-if-exists=.env --import tsx src/server.ts",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "check": "tsc --noEmit",
+    "eval:local": "node --env-file-if-exists=.env --import tsx scripts/evaluate.ts",
+    "check:integrations": "node --env-file-if-exists=.env --import tsx scripts/check-integrations.ts",
+    "test:workflow": "node --env-file-if-exists=.env --import tsx scripts/test-workflow.ts",
+    "test:commitments": "node --env-file-if-exists=.env --import tsx scripts/test-commitments.ts",
+    "test:calendar": "node --env-file-if-exists=.env --import tsx scripts/test-calendar-scenarios.ts"
+  },
+  "dependencies": {
+    "@ai-sdk/openai-compatible": "latest",
+    "@fastify/cookie": "latest",
+    "@fastify/static": "latest",
+    "@huggingface/transformers": "latest",
+    "@mastra/core": "latest",
+    "@sentry/node": "latest",
+    "@temporalio/client": "latest",
+    "@temporalio/worker": "latest",
+    "@temporalio/workflow": "latest",
+    "fastify": "latest",
+    "pg": "latest",
+    "qrcode": "^1.5.4",
+    "react": "latest",
+    "react-dom": "latest",
+    "telegram": "^2.26.22",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/pg": "latest",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@vitejs/plugin-react": "^4.7.0",
+    "node": "^22.0.0",
+    "tsx": "latest",
+    "typescript": "latest",
+    "vite": "^6.0.0"
+  }
+}

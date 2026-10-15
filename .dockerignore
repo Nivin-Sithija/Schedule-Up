@@ -1,0 +1,12 @@
+node_modules
+dist
+data
+.env
+.env.*
+.git
+.aws
+.codex
+.agents
+.vscode
+.DS_Store
+**/*.log

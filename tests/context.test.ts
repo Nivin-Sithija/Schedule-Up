@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { fitContext } from '../src/ai.js';
+import { validDeadline } from '../src/domain.js';
+import { calendarContext, resolveCalendar } from '../src/calendar.js';
+test('old context is dropped before new messages are shortened',()=>{const result=fitContext('rules',{newMessageIds:['fresh'],messages:[{id:'old',text:'x'.repeat(1000)},{id:'fresh',text:'promise'}],tasks:[]},250);assert.deepEqual(result.input.messages.map((m:any)=>m.id),['fresh']);assert.equal(result.truncated,false);});
+test('shortened new messages force owner review',()=>{const result=fitContext('rules',{newMessageIds:['fresh'],messages:[{id:'fresh',text:'x'.repeat(3000)}],tasks:[]},1000);assert.equal(result.truncated,true);assert.equal(result.input.messages[0].text.length,500);});
+test('task omissions force owner review',()=>{const result=fitContext('rules',{messages:[],tasks:[{title:'x'.repeat(1000)}]},100);assert.equal(result.truncated,true);});
+test('oversized instructions are rejected instead of silently truncated',()=>assert.throws(()=>fitContext('x'.repeat(500),{},100),/budget/));
+test('invalid calendar dates cannot enter tasks',()=>assert.equal(validDeadline('2026-02-31'),false));
+test('weekday dates are computed from message-local date, not model arithmetic',()=>assert.equal(calendarContext('2026-10-13T09:00:00+05:30','Asia/Colombo').nextWeekdays.Friday,'2026-10-16'));
+test('timezone conversion handles midnight before resolving tomorrow',()=>assert.equal(calendarContext('2026-10-13T20:00:00Z','Asia/Colombo').tomorrow,'2026-10-15'));
+test('an incorrect model weekday date is corrected by deterministic evidence',()=>{const changes=resolveCalendar([{action:'create',taskId:null,title:'Proposal',responsible:'owner',status:'open',due:'2026-10-15',evidence:['m'],explicit:true,reason:'Friday'}],[{id:'m',clientId:'a',speaker:'owner',text:'I will send the proposal Friday.',sentAt:'2026-10-13T09:00:00+05:30',origin:'mock'}],'Asia/Colombo');assert.equal(changes[0].due,'2026-10-16');});
