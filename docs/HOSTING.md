@@ -34,3 +34,7 @@ Render currently lists Standard compute at $25/month and Starter at $7/month. Th
 OpenRouter's documented free-model limits are 50/day and 20/minute without the qualifying credit purchase, or 1,000/day after a $10 credit purchase. The requests to free models remain zero-priced; the purchase is optional for the initial trial and must not be made automatically. Repairs/drafts use requests too. Verify the actual key's free_model_daily_requests using its key endpoint before launch. More keys do not increase account limits.
 
 [OpenRouter free-model limits](https://openrouter.ai/blog/tutorials/how-to-get-the-lowest-cost-llm-inference-on-openrouter/) · [Current limit API](https://openrouter.ai/docs/api_reference/limits)
+
+## Current preflight result
+
+Native AMD64 container verification passed in [GitHub Actions](https://github.com/Nivin-Sithija/followthrough/actions/runs/38674034084): image build, 80 tests, and offline embedding inference. WAHA's pinned image manifest supports Linux AMD64. Render API authentication succeeds, but `POST /blueprints/validate` currently returns `need_payment_info` for all three resources. Complete billing setup and verify the promotional credit in My Workspace before approving paid provisioning. No resources have been created. OpenRouter's two free Gemma endpoints currently reject inference with upstream shared-pool rate limits; a valid key and unused personal quota do not establish provider availability.

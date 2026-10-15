@@ -53,7 +53,8 @@ services:
     name: followthrough-waha
     runtime: image
     image:
-      url: docker.io/devlikeapro/waha:noweb-2026.9.2
+      # NOWEB 2026.9.2; verified Linux AMD64 image.
+      url: docker.io/devlikeapro/waha@sha256:be61f8cd7774ab22bd1b755cbc539f98d71d81d5ca83555fdddfa4fddd7924e1
     plan: starter
     region: singapore
     disk:
