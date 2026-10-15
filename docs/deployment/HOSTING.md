@@ -38,10 +38,17 @@ OpenRouter's documented free-model limits are 50/day and 20/minute without the q
 
 ## Current preflight result
 
-Native AMD64 container verification passed in [GitHub Actions](https://github.com/Nivin-Sithija/followthrough/actions/runs/38674034084): image build, 80 tests, and offline embedding inference. WAHA's pinned image manifest supports Linux AMD64. Render API authentication succeeds and Blueprint validation now passes after billing setup. The owner approved the revised three-Starter demo plan plus two 1 GB disks on 15 October 2026. GitHub repository access was granted. All three services have been created and are live; full hosted acceptance checks are pending.
+Native AMD64 container verification passed in [GitHub Actions](https://github.com/Nivin-Sithija/Schedule-Up/actions/runs/38674034084): image build, 80 tests, and offline embedding inference. WAHA's pinned image manifest supports Linux AMD64. Render API authentication succeeds and Blueprint validation now passes after billing setup. The owner approved the revised three-Starter demo plan plus two 1 GB disks on 15 October 2026. GitHub repository access was granted. All three services have been created and are live; full hosted acceptance checks are pending.
 
 The app is live at `https://followthrough.onrender.com` on Starter. All three services are live. The hosted root page, favicon, health endpoint and signed-out account endpoint return 200; protected `/api/state` returns 401 without a session. The local API/worker was stopped before cutover. The owner confirmed login and both channel connections on the hosted app. Hosted message/calendar acceptance checks remain pending.
 
 The selected custom domain is `scheduleup.tech`, added to Render together with its www redirect. Its authoritative nameservers are the `.tech domains` OrderBox nameservers. Required DNS: apex A `216.24.57.1`; www CNAME `followthrough.onrender.com`. Render verified both domains, and Google Public DNS returns the expected apex A and www CNAME records. HTTPS activation subsequently passed direct certificate-verified checks: apex /api/health returned 200 with {"ok":true}, and www returned a 301 redirect to https://scheduleup.tech/. The laptop's ordinary resolver still retained negative DNS cache results at that time.
 
 OpenRouter's shared Google pool initially returned HTTP 429 despite unused account quota. A prioritized Google AI Studio provider key resolved that blocker. Hosted Gemma passed acceptance, counteroffer and later-agreement extraction scenarios, plus editable drafting. The account's existing OpenRouter key was reused; no paid model or Google billing was enabled by the agent. The real hosted message-to-calendar test remains pending.
+
+
+## Schedule-Up deployment migration (15 October 2026)
+
+The repository is `Nivin-Sithija/Schedule-Up`. The replacement public app is `srv-db86s52j9qps73bsojdg` at `https://schedule-up.onrender.com`, on the existing Starter/Singapore configuration. The private WAHA and Temporal services and their persistent disks are retained. The custom domain remains `scheduleup.tech`; its apex A record remains `216.24.57.1`, and its www CNAME should target `schedule-up.onrender.com`.
+
+GitHub Actions requires the encrypted repository secret `RENDER_API_KEY` and repository variable `RENDER_SERVICE_ID`. The previous deploy failure was caused by the missing secret; build, regression, audit and Linux container checks had passed. Render autodeploy is off: the CI deploy job controls promotion after checks and the container verification pass.

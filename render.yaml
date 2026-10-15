@@ -1,7 +1,8 @@
 # Single-instance pilot. Review secrets and costs before provisioning.
 services:
   - type: web
-    name: followthrough
+    name: Schedule-Up
+    autoDeployTrigger: off
     runtime: docker
     plan: starter
     region: singapore

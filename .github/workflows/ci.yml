@@ -52,5 +52,5 @@ jobs:
         run: node scripts/deploy-render.mjs
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-          RENDER_SERVICE_ID: srv-db84sme89jmc73c7n670
+          RENDER_SERVICE_ID: ${{ vars.RENDER_SERVICE_ID }}
           GITHUB_TOKEN: ${{ github.token }}

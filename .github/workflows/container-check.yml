@@ -13,8 +13,8 @@ jobs:
         with:
           persist-credentials: false
       - name: Build Render application image (native AMD64)
-        run: docker build --progress=plain -t followthrough:ci .
+        run: docker build --progress=plain -t schedule-up:ci .
       - name: Run regression suite inside Linux image
-        run: docker run --rm --network none -e NODE_ENV=test -e STORE_DRIVER=file -e DURABLE_MODE=local followthrough:ci npm test
+        run: docker run --rm --network none -e NODE_ENV=test -e STORE_DRIVER=file -e DURABLE_MODE=local schedule-up:ci npm test
       - name: Verify bundled embedding model without network
-        run: docker run --rm --network none followthrough:ci node scripts/prewarm-embeddings.mjs
+        run: docker run --rm --network none schedule-up:ci node scripts/prewarm-embeddings.mjs
